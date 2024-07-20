@@ -74,22 +74,27 @@ void                    ceres_q_load_event(unsigned char* frame, int* len, unsig
 char                    ceres_s2k_kdl_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest);
 
 /** Access event.
-    Store event num into [event_dest] and card code into [card_code_dest].
+    Store event num into [event_dest] and card code into [code_dest].
     @return void
 */
-void                    ceres_s2k_kdl_event_access(unsigned char* frame, unsigned char* event_dest, unsigned char card_code_dest[CERES_SIZE_CARD_CODE]);
+void                    ceres_s2k_kdl_event_access(unsigned char* frame, unsigned char* event_dest, unsigned char code_dest[CERES_SIZE_CARD_CODE]);
 
 /** Relay event.
-    Store event num into [event_dest], relay num into [relay_num_dest] and relay program into [program_dest].
+    Store event num into [event_dest], relay num into [relay_dest] and relay program into [program_dest].
     @return void
 */
-void                    ceres_s2k_kdl_event_relay(unsigned char* frame, unsigned char* event_dest, unsigned char* relay_num_dest, unsigned char* program_dest);
+void                    ceres_s2k_kdl_event_relay(unsigned char* frame, unsigned char* event_dest, unsigned char* relay_dest, unsigned char* program_dest);
 
 /** Common event.
-    Store event num into [event_dest] and zone num into [zone_num_dest].
+    Store event num into [event_dest] and zone num into [zone_dest].
     @return void
 */
-void                    ceres_s2k_kdl_event_common(unsigned char* frame, unsigned char* event_dest, unsigned char* zone_num_dest);
+void                    ceres_s2k_kdl_event_common(unsigned char* frame, unsigned char* event_dest, unsigned char* zone_dest);
+
+void                    ceres_s2k_kdl_q_counter(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
+
+char                    ceres_s2k_kdl_r_counter(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone, long long unsigned int* counter_dest);
+
 
 
 /*--------RELAY-------*/

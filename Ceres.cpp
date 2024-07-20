@@ -150,6 +150,9 @@ void            ceres_q_load_event(unsigned char* frame, int* len, unsigned char
     return;
 };
 
+
+
+
 /*S2000-KDL*/
 char             ceres_s2k_kdl_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest)
 {
@@ -189,26 +192,66 @@ char             ceres_s2k_kdl_event_type(unsigned char* frame, int* len, unsign
     return 0;
 };
 
-void             ceres_s2k_kdl_event_access(unsigned char* frame, unsigned char* event_dest, unsigned char card_code_dest[CERES_SIZE_CARD_CODE])
+void             ceres_s2k_kdl_event_access(unsigned char* frame, unsigned char* event_dest, unsigned char code_dest[CERES_SIZE_CARD_CODE])
 {
     *event_dest = frame[3];
-    for (int i = 13; i > 3; i--) card_code_dest[13-i] = frame[i];
+    for (int i = 13; i > 3; i--) code_dest[13-i] = frame[i];
     return;
 };
 
-void             ceres_s2k_kdl_event_relay(unsigned char* frame, unsigned char* event_dest, unsigned char* relay_num_dest, unsigned char* program_dest)
+void             ceres_s2k_kdl_event_relay(unsigned char* frame, unsigned char* event_dest, unsigned char* relay_dest, unsigned char* program_dest)
 {
     *event_dest = frame[3];
-    *relay_num_dest = frame[4];
+    *relay_dest = frame[4];
     *program_dest = frame[5];
     return;
 };
 
-void             ceres_s2k_kdl_event_common(unsigned char* frame, unsigned char* event_dest, unsigned char* zone_num_dest)
+void             ceres_s2k_kdl_event_common(unsigned char* frame, unsigned char* event_dest, unsigned char* zone_dest)
 {
     *event_dest = frame[3];
-    *zone_num_dest = frame[4];
+    *zone_dest = frame[4];
     return;
+};
+
+void            ceres_s2k_kdl_q_counter(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone)
+{
+    frame[0] = *addr_s;
+    frame[1] = 0x08;
+    frame[2] = ceres_msg_keygen();
+    frame[3] = 0x57;
+    frame[4] = 0x07;
+    frame[5] = 0x00;
+    frame[6] = 0x00;
+    frame[7] = zone;
+
+    *len = frame[1] ;
+
+    ceres_base_transform(frame, len, global_key);
+
+    ceres_crc_add(frame, len);
+    return;
+}
+
+char            ceres_s2k_kdl_r_counter(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone, long long unsigned int* counter_dest)
+{
+    *counter_dest = 0;
+
+    if (frame[0] != *addr_s) return -1;                         //check addr
+    if (ceres_crc_trim(frame, len)) return -1;                  //check crc
+
+    ceres_base_transform(frame, len, global_key);
+    ceres_additional_transform(frame, len, global_key, 0x58);
+
+    if (frame[4] != zone) return -1;
+
+    for (int i = 12; i >= 7; i--)
+    {
+        (*counter_dest) |= frame[i];
+        if (i > 7) (*counter_dest) <<= 8;
+    }
+
+    return 0;
 };
 
 
