@@ -1,6 +1,9 @@
 #ifndef CERES_H_INCLUDED
 #define CERES_H_INCLUDED
 
+
+#define CERES_SIZE_CARD_CODE                10
+
 void ceres_begin ();
 void ceres_free ();
 
@@ -60,14 +63,19 @@ void                    ceres_q_read_event(unsigned char* frame, int* len, unsig
 
 void                    ceres_q_load_event(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key);
 
-/** Store event type if event exist into [int* event_type_dest], if no event or error, stores zero.
+/*S2000-KDL*/
+/** Store event type if event exist into [event_type_dest], if no event or error, stores zero.
     @return
     [-1]    error
     [0]     event
     [1]     no event
 
 */
-char                    ceres_r_get_event_type_s2k_kdl(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest);
+char                    ceres_s2k_kdl_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest);
 
+/** Store event num into [event_dest] and card code into [card_code_dest].
+    @return void
+*/
+void                    ceres_s2k_kdl_event_access(unsigned char* frame, unsigned char* event_dest, unsigned char card_code_dest[CERES_SIZE_CARD_CODE]);
 
 #endif // CERES_H_INCLUDED

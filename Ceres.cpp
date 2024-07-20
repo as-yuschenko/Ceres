@@ -150,34 +150,35 @@ void            ceres_q_load_event(unsigned char* frame, int* len, unsigned char
     return;
 };
 
-char            ceres_r_get_event_type_s2k_kdl(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest)
+/*S2000-KDL*/
+char             ceres_s2k_kdl_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest)
 {
-    *event_type_dest = 0; //drop event type
+    *event_type_dest = 0;                                       //drop event type
 
-    if (frame[0] != *addr_s) return -1; //check addr
-    if (ceres_crc_trim(frame, len)) return -1; //check crc
+    if (frame[0] != *addr_s) return -1;                         //check addr
+    if (ceres_crc_trim(frame, len)) return -1;                  //check crc
 
     ceres_base_transform(frame, len, global_key);
 
-    if ((frame[1] < 0x0A)) // online, event not card
+    if ((frame[1] < 0x0A))                                      // online, event is not access
     {
         ceres_additional_transform(frame, len, global_key, 0x04);
         if ((frame[1] == 0x05) && (frame[4] == 0x06)) return 1; //no event
     }
-    else if ((frame[1] == 0x0E)) // online, event card
+    else if ((frame[1] == 0x0E))                                // online, event is access
     {
         ceres_additional_transform(frame, len, global_key, 0x0E);
     }
-    else if ((frame[1] == 0x10)) // from buffer, event card
+    else if ((frame[1] == 0x10))                                // from buffer, event is access
     {
         ceres_additional_transform(frame, len, global_key, 0x04);
     }
 
-    else if ((frame[1] > 0x0A)) // from buffer event not card
+    else if ((frame[1] > 0x0A))                                 // from buffer event is not access
     {
         ceres_additional_transform(frame, len, global_key, 0x0C);
     }
-    else //error
+    else                                                        //error
     {
         //err proc
         return -1;
@@ -185,8 +186,13 @@ char            ceres_r_get_event_type_s2k_kdl(unsigned char* frame, int* len, u
 
     *event_type_dest = CERES_EVENT_TYPE_ARR[(int)(frame[3])];
 
-    printf("\nEvent: %s\n\n", CERES_EVENT_DESC_ARR[(int)(frame[3])]);
     return 0;
 };
 
+void                    ceres_s2k_kdl_event_access(unsigned char* frame, unsigned char* event_dest, unsigned char card_code_dest[CERES_SIZE_CARD_CODE])
+{
+    *event_dest = frame[3];
+    for (int i = 13; i > 3; i--) card_code_dest[13-i] = frame[i];
+    return;
+};
 

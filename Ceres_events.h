@@ -4,8 +4,9 @@
 #define CERES_ET_ALARM        1
 #define CERES_ET_ARM          2
 #define CERES_ET_TROUBLE      4
-#define CERES_ET_RELAY        8
-#define CERES_ET_ACCESS       16
+#define CERES_ET_RECOVERY     8
+#define CERES_ET_RELAY        16
+#define CERES_ET_ACCESS       32
 
 
 
