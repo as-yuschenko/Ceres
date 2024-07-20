@@ -73,9 +73,32 @@ void                    ceres_q_load_event(unsigned char* frame, int* len, unsig
 */
 char                    ceres_s2k_kdl_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest);
 
-/** Store event num into [event_dest] and card code into [card_code_dest].
+/** Access event.
+    Store event num into [event_dest] and card code into [card_code_dest].
     @return void
 */
 void                    ceres_s2k_kdl_event_access(unsigned char* frame, unsigned char* event_dest, unsigned char card_code_dest[CERES_SIZE_CARD_CODE]);
+
+/** Relay event.
+    Store event num into [event_dest], relay num into [relay_num_dest] and relay program into [program_dest].
+    @return void
+*/
+void                    ceres_s2k_kdl_event_relay(unsigned char* frame, unsigned char* event_dest, unsigned char* relay_num_dest, unsigned char* program_dest);
+
+/** Common event.
+    Store event num into [event_dest] and zone num into [zone_num_dest].
+    @return void
+*/
+void                    ceres_s2k_kdl_event_common(unsigned char* frame, unsigned char* event_dest, unsigned char* zone_num_dest);
+
+
+/*--------RELAY-------*/
+void                    ceres_q_relay_on(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay);
+
+char                    ceres_r_relay_on(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay);
+
+void                    ceres_q_relay_off(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay);
+
+char                    ceres_r_relay_off(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay);
 
 #endif // CERES_H_INCLUDED

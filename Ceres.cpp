@@ -189,10 +189,88 @@ char             ceres_s2k_kdl_event_type(unsigned char* frame, int* len, unsign
     return 0;
 };
 
-void                    ceres_s2k_kdl_event_access(unsigned char* frame, unsigned char* event_dest, unsigned char card_code_dest[CERES_SIZE_CARD_CODE])
+void             ceres_s2k_kdl_event_access(unsigned char* frame, unsigned char* event_dest, unsigned char card_code_dest[CERES_SIZE_CARD_CODE])
 {
     *event_dest = frame[3];
     for (int i = 13; i > 3; i--) card_code_dest[13-i] = frame[i];
     return;
 };
 
+void             ceres_s2k_kdl_event_relay(unsigned char* frame, unsigned char* event_dest, unsigned char* relay_num_dest, unsigned char* program_dest)
+{
+    *event_dest = frame[3];
+    *relay_num_dest = frame[4];
+    *program_dest = frame[5];
+    return;
+};
+
+void             ceres_s2k_kdl_event_common(unsigned char* frame, unsigned char* event_dest, unsigned char* zone_num_dest)
+{
+    *event_dest = frame[3];
+    *zone_num_dest = frame[4];
+    return;
+};
+
+
+/*--------RELAY-------*/
+void             ceres_q_relay_on(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay)
+{
+    frame[0] = *addr_s;
+    frame[1] = 0x06;
+    frame[2] = ceres_msg_keygen();
+    frame[3] = 0x15;
+    frame[4] = relay;
+    frame[5] = 0x01;                //program num
+
+    *len = frame[1] ;
+
+    ceres_base_transform(frame, len, global_key);
+
+    ceres_crc_add(frame, len);
+    return;
+
+};
+
+char             ceres_r_relay_on(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay)
+{
+    if (frame[0] != *addr_s) return -1;                         //check addr
+    if (ceres_crc_trim(frame, len)) return -1;                  //check crc
+
+    ceres_base_transform(frame, len, global_key);
+    ceres_additional_transform(frame, len, global_key, 0x16);
+
+    if ((frame[3] == relay) && (frame[4] == 0x01)) return 0;
+
+    return -1;
+};
+
+void             ceres_q_relay_off(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay)
+{
+    frame[0] = *addr_s;
+    frame[1] = 0x06;
+    frame[2] = ceres_msg_keygen();
+    frame[3] = 0x15;
+    frame[4] = relay;
+    frame[5] = 0x02;                //program num
+
+    *len = frame[1] ;
+
+    ceres_base_transform(frame, len, global_key);
+
+    ceres_crc_add(frame, len);
+    return;
+
+};
+
+char             ceres_r_relay_off(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay)
+{
+    if (frame[0] != *addr_s) return -1;                         //check addr
+    if (ceres_crc_trim(frame, len)) return -1;                  //check crc
+
+    ceres_base_transform(frame, len, global_key);
+    ceres_additional_transform(frame, len, global_key, 0x16);
+
+    if ((frame[3] == relay) && (frame[4] == 0x02)) return 0;
+
+    return -1;
+};
