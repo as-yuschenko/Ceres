@@ -106,4 +106,37 @@ void                    ceres_q_relay_off(unsigned char* frame, int* len, unsign
 
 char                    ceres_r_relay_off(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay);
 
+
+/*--------ADC-------*/
+void                    ceres_q_adc_v1(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
+
+char                    ceres_r_adc_v1(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key);
+
+void                    ceres_q_adc_v2(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
+
+char                    ceres_r_adc_v2(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key);
+
+void                    ceres_extract_adc(unsigned char* frame, int* len, double* dest);
+void                    ceres_extract_adc(unsigned char* frame, int* len, long int* dest);
 #endif // CERES_H_INCLUDED
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

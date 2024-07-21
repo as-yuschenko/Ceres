@@ -317,3 +317,140 @@ char             ceres_r_relay_off(unsigned char* frame, int* len, unsigned char
 
     return -1;
 };
+
+
+/*--------ADC-------*/
+void             ceres_q_adc_v1(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone)
+{
+    frame[0] = *addr_s;
+    frame[1] = 0x06;
+    frame[2] = ceres_msg_keygen();
+    frame[3] = 0x39;
+    frame[4] = zone;
+    frame[5] = 0x0A;
+
+    *len = frame[1] ;
+
+    ceres_base_transform(frame, len, global_key);
+
+    ceres_crc_add(frame, len);
+    return;
+};
+
+char             ceres_r_adc_v1(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key)
+{
+    if (frame[0] != *addr_s) return -1;                         //check addr
+    if (ceres_crc_trim(frame, len)) return -1;                  //check crc
+
+    ceres_base_transform(frame, len, global_key);
+    ceres_additional_transform(frame, len, global_key, 0x3A);
+
+    frame[*len] = 0x00;
+
+    return 0;
+};
+
+void             ceres_q_adc_v2(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone)
+{
+    frame[0] = *addr_s;
+    frame[1] = 0x08;
+    frame[2] = ceres_msg_keygen();
+    frame[3] = 0x57;
+    frame[4] = 0x04;
+    frame[5] = 0x05;
+    frame[6] = 0x00;
+    frame[7] = zone;
+
+    *len = frame[1] ;
+
+    ceres_base_transform(frame, len, global_key);
+
+    ceres_crc_add(frame, len);
+    return;
+};
+
+char             ceres_r_adc_v2(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key)
+{
+    if (frame[0] != *addr_s) return -1;                         //check addr
+    if (ceres_crc_trim(frame, len)) return -1;                  //check crc
+
+    ceres_base_transform(frame, len, global_key);
+    ceres_additional_transform(frame, len, global_key, 0x58);
+
+    frame[*len] = 0x00;
+
+    return 0;
+};
+
+void             ceres_extract_adc(unsigned char* frame, int* len, double* dest)
+{
+    int l = 0;
+    int factor = 1;
+    char* pos = nullptr;
+    for (int p = 3; p < *len; p++)
+    {
+        if (((frame[p] >= 0x30) && (frame[p] <= 0x39)) || (frame[p] == 0x2E) || (frame[p] == 0x2C))
+        {
+            if (l == 0)
+            {
+                pos = (char*)(frame + p);
+                if (frame[p - 1] == 0x2D) factor = -1;
+            }
+            if ((frame[p] == 0x2C)) frame[p] = 0x2E;
+
+            l++;
+        }
+    }
+    if (pos) pos[l] = 0x00;
+
+    *dest = strtod(pos, nullptr) * factor;
+    return;
+}
+void             ceres_extract_adc(unsigned char* frame, int* len, long int* dest)
+{
+    int l = 0;
+    int factor = 1;
+    char* pos = nullptr;
+    for (int p = 3; p < *len; p++)
+    {
+        if ((frame[p] >= 0x30) && (frame[p] <= 0x39))
+        {
+            if (l == 0)
+            {
+                pos = (char*)(frame + p);
+                if (frame[p - 1] == 0x2D) factor = -1;
+            }
+
+            l++;
+        }
+    }
+
+    if (pos) pos[l] = 0x00;
+
+    *dest = strtol(pos, nullptr, 10) * factor;
+    return;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
