@@ -71,7 +71,7 @@ void                    ceres_q_load_event(unsigned char* frame, int* len, unsig
     [1]     no event
 
 */
-char                    ceres_s2k_kdl_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest);
+char                    ceres_s2k_kdl_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest, unsigned char* event_dest);
 
 /** Access event.
     Store event num into [event_dest] and card code into [code_dest].
@@ -95,6 +95,15 @@ void                    ceres_s2k_kdl_q_counter(unsigned char* frame, int* len, 
 
 char                    ceres_s2k_kdl_r_counter(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone, long long unsigned int* counter_dest);
 
+/*--------ZONES-------*/
+void                    ceres_q_zone_arm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
+
+char                    ceres_r_zone_arm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
+
+void                    ceres_q_zone_disarm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
+
+char                    ceres_r_zone_disarm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
+
 
 
 /*--------RELAY-------*/
@@ -105,6 +114,7 @@ char                    ceres_r_relay_on(unsigned char* frame, int* len, unsigne
 void                    ceres_q_relay_off(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay);
 
 char                    ceres_r_relay_off(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay);
+
 
 
 /*--------ADC-------*/
