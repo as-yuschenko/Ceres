@@ -4,6 +4,7 @@
 #include <cstring>
 #include <cstdio>
 #include "Ceres_events.h"
+#include "Ceres_proto.h"
 
 void ceres_init ()
 {
@@ -13,76 +14,6 @@ void ceres_init ()
 void ceres_free ()
 {
 
-};
-
-
-/*--------CRC--------*/
-unsigned char   ceres_crc_calc(unsigned char* frame, int* len)
-{
-    unsigned char crc = 0;
-    for (int i = 0; i < *len; ++i) crc = ceres_crc_table[crc ^ frame[i]];
-    return crc;
-};
-
-void            ceres_crc_add (unsigned char* frame, int* len)
-{
-    frame[*len] = ceres_crc_calc(frame, len);
-    (*len)++;
-    return;
-};
-
-char            ceres_crc_trim (unsigned char* frame, int* len)
-{
-    (*len)--;
-    if (frame[(*len)] == ceres_crc_calc(frame, len)) return 0;
-    else (*len)++;
-    return -1;
-};
-
-
-/*--------CIPHER--------*/
-unsigned char   ceres_msg_keygen()
-{
-    return ceres_crc_table[rand()%256];
-};
-
-void            ceres_base_transform(unsigned char* frame, int* len, unsigned char* global_key)
-{
-    for (int i = 3; i < *len; i++) frame[i] = frame[i] ^ /*msg key*/frame[2] ^ /*dev key*/(*global_key);
-    return;
-}
-
-void            ceres_additional_transform(unsigned char* frame, int* len, unsigned char* global_key, unsigned char cmd)
-{
-    for (int i = 3; i < *len; i++) frame[i] = frame[i] ^ (/*command*/cmd ^ /*dev key*/(*global_key));
-    return;
-};
-
-unsigned char   ceres_sniff_dev_key(unsigned char* frame, int* len, unsigned char addr)
-{
-    if (!ceres_crc_trim(frame, len))
-    {
-        if ((addr ^ 0x80) == frame[0])
-        {
-            if (frame [1] == 0x06)
-            {
-                for (unsigned char k = 0x00; k <= 0xff; k++)
-                {
-                    if  ((frame[2] ^ frame[3] ^ k) == 0x01)
-                    {
-                        if  ((frame[2] ^ frame[4] ^ k) == 0x00)
-                        {
-                            if  ((frame[2] ^ frame[5] ^ k) == 0xf7)
-                            {
-                                return k;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return 0;
 };
 
 
@@ -112,6 +43,97 @@ char            ceres_r_sec_begin(unsigned char* frame, int* len, unsigned char*
                 return 0;
 
     return -1;
+};
+
+
+/*--STATES--*/
+//SIMPLE
+void            ceres_q_state_simp(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone)
+{
+    frame[0] = *addr_s;
+    frame[1] = 0x06;
+    frame[2] = ceres_msg_keygen();
+    frame[3] = 0x19;
+    frame[4] = zone;
+    frame[5] = 0x00;
+
+    *len = frame[1] ;
+
+    ceres_base_transform(frame, len, global_key);
+
+    ceres_crc_add(frame, len);
+    return;
+};
+
+char             ceres_r_state_simp(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone, int* obtain_dest, unsigned char states_dest[CERES_SIZE_STATES_ARR])
+{
+    memset(states_dest, 0x00, CERES_SIZE_STATES_ARR);
+    *obtain_dest = 0;
+
+    if (frame[0] != *addr_s) return -1;                         //check addr
+    if (ceres_crc_trim(frame, len)) return -1;                  //check crc
+
+    ceres_base_transform(frame, len, global_key);
+    ceres_additional_transform(frame, len, global_key, 0x1A);
+
+    if (frame[3] == zone)
+    {
+        states_dest[0] = frame[4];
+        (*obtain_dest)++;
+
+        if (frame[3] == 0x00)
+        {
+            states_dest[1] = frame[5];
+            states_dest[2] = frame[6];
+            (*obtain_dest) += 2;
+        }
+    }
+    else return -1;
+
+    return 0;
+};
+
+
+//SIMPLE
+void                    ceres_q_state_ext(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone)
+{
+    frame[0] = *addr_s;
+    frame[1] = 0x08;
+    frame[2] = ceres_msg_keygen();
+    frame[3] = 0x57;
+    frame[4] = 0x02;
+    frame[5] = 0x00;
+    frame[6] = 0x01;
+    frame[7] = zone;
+
+    *len = frame[1] ;
+
+    ceres_base_transform(frame, len, global_key);
+
+    ceres_crc_add(frame, len);
+    return;
+};
+
+char             ceres_r_state_ext(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone, int* obtain_dest, unsigned char states_dest[CERES_SIZE_STATES_ARR])
+{
+    memset(states_dest, 0x00, CERES_SIZE_STATES_ARR);
+    *obtain_dest = 0;
+
+    if (frame[0] != *addr_s) return -1;                         //check addr
+    if (ceres_crc_trim(frame, len)) return -1;                  //check crc
+
+    ceres_base_transform(frame, len, global_key);
+    ceres_additional_transform(frame, len, global_key, 0x58);
+
+    if (frame[4] != zone) return -1;
+
+    if (frame[6] > CERES_SIZE_STATES_ARR) return -1;
+
+    for (int i = 0; i < frame[6]; i++) states_dest[i] = frame[7 + i];
+
+    *obtain_dest =frame[6];
+
+    return 0;
 };
 
 
