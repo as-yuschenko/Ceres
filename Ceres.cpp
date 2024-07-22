@@ -17,7 +17,34 @@ void ceres_free ()
 };
 
 
-/*--------POLLING--------*/
+/*--DEVICE--*/
+void                    ceres_q_dev_info(unsigned char* frame, int* len, unsigned char* addr_o)
+{
+    frame[0] = *addr_o;
+    frame[1] = 0x06;
+    frame[2] = 0x00;
+    frame[3] = 0x0D;
+    frame[4] = 0x00;
+    frame[5] = 0x00;
+
+    *len = frame[1] ;
+
+    ceres_crc_add(frame, len);
+    return;
+};
+
+char                    ceres_r_dev_info(unsigned char* frame, int* len, unsigned char* addr_o, unsigned char* type_dest, unsigned char* ver_dest)
+{
+    if (frame[0] != *addr_o) return -1;                         //check addr
+    if (ceres_crc_trim(frame, len)) return -1;                  //check crc
+
+    *type_dest = frame[3];
+    *ver_dest = frame[4];
+
+    return 0;
+};
+
+
 
 /*--GO SEC MODE--*/
 void            ceres_q_sec_begin(unsigned char* frame, int* len, unsigned char* addr_o, unsigned char* global_key)
@@ -44,6 +71,7 @@ char            ceres_r_sec_begin(unsigned char* frame, int* len, unsigned char*
 
     return -1;
 };
+
 
 
 /*--STATES--*/

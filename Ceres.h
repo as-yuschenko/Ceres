@@ -9,13 +9,16 @@ void ceres_begin ();
 void ceres_free ();
 
 
-/*--------POLLING--------*/
+/*--DEVICE--*/
+void                    ceres_q_dev_info(unsigned char* frame, int* len, unsigned char* addr_o);
+
+char                    ceres_r_dev_info(unsigned char* frame, int* len, unsigned char* addr_o, unsigned char* type_dest, unsigned char* ver_dest);
+
 
 /*--GO SEC MODE--*/
 void                    ceres_q_sec_begin(unsigned char* frame, int* len, unsigned char* addr_o, unsigned char* global_key);
 
 char                    ceres_r_sec_begin(unsigned char* frame, int* len, unsigned char* addr_o, unsigned char* global_key);
-
 
 
 /*--STATES--*/
