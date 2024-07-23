@@ -1,4 +1,4 @@
-# Ceres
+# Ceres ![](./Ceres.png?raw=true)
 # Опрос и управление устройствами системы "Орион" компании Болид.
 
 ## Реализованый в библиотеке функционал в настоящее время позволяет:
@@ -46,7 +46,7 @@ unsigned char* global_key //указатель на глобаный ключ
 Функции, начинающиеся с **"ceres_r_"**, проверяют достоверность полученных данных и, за некоторым исключением, сохраняют по переданным указателям запрошенные данные.  
   
 
-### Получения типа и версии устройства.
+## Получения типа и версии устройства.
 
 ```cpp
 /** Запрос для получения информации о устройстве.
@@ -65,7 +65,7 @@ void ceres_q_dev_info(unsigned char* frame, int* len, unsigned char* addr_o);
 char ceres_r_dev_info(unsigned char* frame, int* len, unsigned char* addr_o, unsigned char* type_dest, unsigned char* ver_dest);
 ```
 
-### Переход на зашифрованный протокол обмена "Орион".
+## Переход на зашифрованный протокол обмена "Орион".
 
 ```cpp
 /** Запрос на переход на зашифрованный протокол обмена.
@@ -82,9 +82,9 @@ void ceres_q_sec_begin(unsigned char* frame, int* len, unsigned char* addr_o, un
 char ceres_r_sec_begin(unsigned char* frame, int* len, unsigned char* addr_o, unsigned char* global_key);
 ```
 
-### Общее состояние шлейфа, выхода или прибора.
+## Общее состояние шлейфа, выхода или прибора.
 
-Для получения состояния(й) необходимо создать буфер размером 5 байт, или использовать значение, определенное в **CERES_SIZE_STATES_ARR**. Полуенные значения будут сохранены в этот буфер, а в переменную obtain_dest будет сохранено количество полученных состояний. Для получения состояния прибора необходимо передать zone равным нулю.
+Для получения состояния(й) необходимо создать буфер размером 5 байт, или использовать значение, определенное в **CERES_SIZE_STATES_ARR**. Полученные значения будут сохранены в этот буфер, а в переменную obtain_dest будет сохранено количество полученных состояний. Для получения состояния прибора необходимо передать zone равным нулю.
 
 **Внимание!** В любом случае буфер states_dest и obtain_dest сначала заполняются нулями.  
 
@@ -95,7 +95,7 @@ char ceres_r_sec_begin(unsigned char* frame, int* len, unsigned char* addr_o, un
 */
 void ceres_q_state_simp(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
 
-	
+
 /** Анализ ответа на запрос на получение общего состояния шлейфа, выхода или прибора.
 * @param unsigned char zone	- номер шлейфа или выхода.
 * @param int* obtain_dest - указатель на переменную для сохранения количества полученных состояний.
@@ -107,15 +107,15 @@ void ceres_q_state_simp(unsigned char* frame, int* len, unsigned char* addr_s, u
 char ceres_r_state_simp(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone, int* obtain_dest, unsigned char states_dest[CERES_SIZE_STATES_ARR]);
 ```
 
-### Расширенное состояние шлейфа, выхода или прибора.
+## Расширенное состояние шлейфа, выхода или прибора.
 
-Для получения состояния(й) необходимо создать (использовать созданный ранее) буфер размером 5 байт, или использовать значение, определенное в **CERES_SIZE_STATES_ARR**. Полуенные значения будут сохранены в этот буфер, а в переменную obtain_dest будет сохранено количество полученных состояний. Для получения состояния прибора необходимо передать zone равным нулю.
+Для получения состояния(й) необходимо создать (использовать созданный ранее) буфер размером 5 байт, или использовать значение, определенное в **CERES_SIZE_STATES_ARR**. Полученные значения будут сохранены в этот буфер, а в переменную obtain_dest будет сохранено количество полученных состояний. Для получения состояния прибора необходимо передать zone равным нулю.
 
-**Внимание!** В любом случае буфер states_dest и obtain_dest сначала заполняются нулями.  
+**Внимание!** В любом случае буфер states_dest и obtain_dest сначала заполняются нулями.
 
 ```cpp
 /** Запрос на получение расширенного состояния шлейфа, выхода или прибора.
-* @param unsigned char zone		- номер шлейфа или выхода.
+* @param unsigned char zone - номер шлейфа или выхода.
 * @return void
 */
 void ceres_q_state_ext(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
@@ -132,106 +132,150 @@ void ceres_q_state_ext(unsigned char* frame, int* len, unsigned char* addr_s, un
 char ceres_r_state_ext(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone, int* obtain_dest, unsigned char states_dest[CERES_SIZE_STATES_ARR]);
 ```
 
-### Получение события прибора.
+## Получение события прибора.
 
 Для получения события прибора необходимо 3 этапа, в отличие от других запросов.
 
 + Сформировать запрос; 
 + Получив ответ, с помощью функции ceres_xxx_event_type(...), где ххх - тип прибора, получить тип события и код события для дальнейшей обработки;
-+ Обработать ответ в зависимости от типа события и получить полезные данные.  
++ Обработать ответ в зависимости от типа события и типа прибра, получив полезные данные.
 
 ```cpp
-    /** Запрос на получение события прибора.
-    * @return void
-    */
-	void ceres_q_read_event(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key);
+/** Запрос на получение события прибора.
+* @return void
+*/
+void ceres_q_read_event(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key);
+```
 
-	
-    /** Анализ ответа на запрос на получение события прибора.
-    * @param unsigned char zone		- номер шлейфа или выхода.
-    * @param int* obtain_dest		- указатель на переменную для сохранения количества полученных состояний.
-    * @param unsigned char states_dest[CERES_SIZE_STATES_ARR]	- указатель на буфер для сохранения состояний.
-    * @return
-    * 			0	- успешно.
-    * 			-1 	- ошибка принятых данных.
-    */
-	char ceres_r_state_ext(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone, int* obtain_dest, unsigned char states_dest[CERES_SIZE_STATES_ARR]);
+### Обработка событий для С2000-КДЛ:
+
+**Получение типа и кода события.**
+
+```cpp
+/** Анализ ответа на запрос на получение события прибора, получение типа и кода события.
+* @param int* event_type_dest - указатель на переменную для сохранения типа события.
+* @param unsigned char* event_dest - указатель на переменную для сохранения кода события.
+* @return
+* 0 - данные обработаны, есть событие.
+* 1 - данные обработаны, событий нет.
+* -1 - ошибка принятых данных.
+*/
+char ceres_09_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest, unsigned char* event_dest);
+```
+
+**Получение данных о событии типа CERES_ET_ACCESS.**
+Для получения кода проксимити-карты необходимо создать (использовать созданный ранее) буфер размером 10 байт, или использовать значение, определенное в **CERES_SIZE_CARD_CODE**. Полученный значения будут сохранены в этот буфер.
+
+```cpp
+/** Получение данных о событии типа CERES_ET_ACCESS.
+* @param unsigned char code_dest[CERES_SIZE_CARD_CODE] - указатель на буфер для сохранения кода проксимити-карты.
+* @param unsigned char* event_dest - указатель на переменную для сохранения кода события.
+* @return
+* void
+*/
+void ceres_09_event_access(unsigned char* frame, unsigned char* event_dest, unsigned char code_dest[CERES_SIZE_CARD_CODE]);
+```
+
+**Получение данных о событии типа CERES_ET_RELAY.**
+
+```cpp
+/** Получение данных о событии типа CERES_ET_RELAY.
+* @param unsigned char* relay_dest - указатель на переменную для сохранения номера реле (выхода).
+* @param unsigned char* program_dest - указатель на переменную для сохранения номера программы управления.
+* @param unsigned char* event_dest - указатель на переменную для сохранения кода события.
+* @return
+* void
+*/
+void ceres_09_event_relay(unsigned char* frame, unsigned char* event_dest, unsigned char* relay_dest, unsigned char* program_dest);
+```
+
+**Получение данных о простых событиях.**
+
+```cpp
+/** Получение данных о простых событиях.
+* @param unsigned char* zone_dest - указатель на переменную для сохранения номера зоны.
+* @param unsigned char* event_dest - указатель на переменную для сохранения кода события.
+* @return
+* void
+*/
+void ceres_09_event_common(unsigned char* frame, unsigned char* event_dest, unsigned char* zone_dest);
 ```
 
 ### Взятие шлейфа под охрану.
 
 ```cpp
-    /** Запрос на взятие шлейфа под охрану.
-    * @param unsigned char zone		- номер шлейфа.
-    * @return void
-    */
-	void	ceres_q_zone_arm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
+/** Запрос на взятие шлейфа под охрану.
+* @param unsigned char zone - номер шлейфа.
+* @return void
+*/
+void ceres_q_zone_arm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
 
-	
-    /** Анализ ответа на запрос на взятие шлейфа под охрану.
-    * @param unsigned char zone		- номер шлейфа или выхода.
-    * @return
-    * 			0	- успешно.
-    * 			-1 	- ошибка принятых данных.
-    */
-	char ceres_r_zone_arm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
+
+/** Анализ ответа на запрос на взятие шлейфа под охрану.
+* @param unsigned char zone - номер шлейфа или выхода.
+* @return
+* 0 - успешно.
+* -1 - ошибка принятых данных.
+*/
+char ceres_r_zone_arm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
 ```
 
 ### Снятие шлейфа с охраны.
 
 ```cpp
-    /** Запрос на снятие шлейфа с охраны.
-    * @param unsigned char zone		- номер шлейфа.
-    * @return void
-    */
-	void	ceres_q_zone_disarm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
+/** Запрос на снятие шлейфа с охраны.
+* @param unsigned char zone - номер шлейфа.
+* @return void
+*/
+void ceres_q_zone_disarm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
 
-	
-    /** Анализ ответа на запрос на снятие шлейфа с охраны.
-    * @param unsigned char zone		- номер шлейфа.
-    * @return
-    * 			0	- успешно.
-    * 			-1 	- ошибка принятых данных.
-    */
-	char ceres_r_zone_disarm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
+
+/** Анализ ответа на запрос на снятие шлейфа с охраны.
+* @param unsigned char zone - номер шлейфа.
+* @return
+* @return
+* 0 - успешно.
+* -1 - ошибка принятых данных.
+*/
+char ceres_r_zone_disarm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
 ```
 
 ### Включить реле (активировать выход).
 
 ```cpp
-    /** Запрос на включение реле.
-    * @param unsigned char relay		- номер реле (выхода).
-    * @return void
-    */
-	void ceres_q_relay_on(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay);
+/** Запрос на включение реле.
+* @param unsigned char relay - номер реле (выхода).
+* @return void
+*/
+void ceres_q_relay_on(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay);
 
-	
-    /** Анализ ответа на запрос на включение реле.
-    * @param unsigned char relay		- номер реле (выхода).
-    * @return
-    * 			0	- успешно.
-    * 			-1 	- ошибка принятых данных.
-    */
-	char ceres_r_relay_on(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay);
+
+/** Анализ ответа на запрос на включение реле.
+* @param unsigned char relay- номер реле (выхода).
+* @return
+* 0 - успешно.
+* -1 - ошибка принятых данных.
+*/
+char ceres_r_relay_on(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay);
 ```
 
 ### Выключить реле (деактивировать выход).
 
 ```cpp
-    /** Запрос на выключение реле.
-    * @param unsigned char relay		- номер реле (выхода).
-    * @return void
-    */
-	void ceres_q_relay_off(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay);
+/** Запрос на выключение реле.
+* @param unsigned char relay - номер реле (выхода).
+* @return void
+*/
+void ceres_q_relay_off(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay);
 
-	
-    /** Анализ ответа на запрос на выключение реле.
-    * @param unsigned char relay		- номер реле (выхода).
-    * @return
-    * 			0	- успешно.
-    * 			-1 	- ошибка принятых данных.
-    */
-	char ceres_r_relay_off(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay);
+
+/** Анализ ответа на запрос на выключение реле.
+* @param unsigned char relay - номер реле (выхода).
+* @return
+* 0 - успешно.
+* -1 - ошибка принятых данных.
+*/
+char ceres_r_relay_off(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay);
 ```
 
 ### Запрос информации о шлейфе в Unicode строку.
@@ -244,55 +288,55 @@ char ceres_r_state_ext(unsigned char* frame, int* len, unsigned char* addr_s, un
   
 ```cpp
 
-	/*Версия 1*/
-	
-    /** Запрос информации о шлейфе в Unicode строку.
-    * @param unsigned char zone		- номер шлейфа.
-    * @return void
-    */
-	void ceres_q_adc_v1(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
+/*Версия 1*/
 
-	
-    /** Анализ ответа на запрос информации о шлейфе в Unicode строку.
-    * @return
-    * 			Указатель на строку данных, в случае успеха.
-    * 			null 	- ошибка принятых данных.
-    */
-	unsigned char* ceres_r_adc_v1(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key);
-	
-	
-	/*Версия 2*/
-	
-	/** Запрос информации о шлейфе в Unicode строку.
-    * @param unsigned char zone		- номер шлейфа.
-    * @return void
-    */
-	void ceres_q_adc_v2(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
+/** Запрос информации о шлейфе в Unicode строку.
+* @param unsigned char zone - номер шлейфа.
+* @return void
+*/
+void ceres_q_adc_v1(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
 
-	
-    /** Анализ ответа на запрос информации о шлейфе в Unicode строку.
-    * @return
-    * 			Указатель на строку данных, в случае успеха.
-    * 			null 	- ошибка принятых данных.
-    */
-	unsigned char* ceres_r_adc_v2(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key);
+
+/** Анализ ответа на запрос информации о шлейфе в Unicode строку.
+* @return
+* Указатель на строку данных, в случае успеха.
+* null - ошибка принятых данных.
+*/
+unsigned char* ceres_r_adc_v1(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key);
+
+
+/*Версия 2*/
+
+/** Запрос информации о шлейфе в Unicode строку.
+* @param unsigned char zone - номер шлейфа.
+* @return void
+*/
+void ceres_q_adc_v2(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
+
+
+/** Анализ ответа на запрос информации о шлейфе в Unicode строку.
+* @return
+* Указатель на строку данных, в случае успеха.
+* null - ошибка принятых данных.
+*/
+unsigned char* ceres_r_adc_v2(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key);
 ```
 
 Для удобства реализованы 2 функции для извлечения значений типа long int и double из полученной Unicode строки.
 
 ```cpp
 
-	/** Извлекает знаковое значение типа long int из Unicode строки.
-    * @param long int* dest		- указатель на переменную для сохранения значения.
-    * @return void
-    */
-	void ceres_extract_adc(unsigned char* frame, int* len, long int* dest);
-	
-	/** Извлекает значение типа double из Unicode строки.
-    * @param double* dest		- указатель на переменную для сохранения значения.
-    * @return void
-    */
-	void ceres_extract_adc(unsigned char* frame, int* len, double* dest);
+/** Извлекает знаковое значение типа long int из Unicode строки.
+* @param long int* dest - указатель на переменную для сохранения значения.
+* @return void
+*/
+void ceres_extract_adc(unsigned char* frame, int* len, long int* dest);
+
+/** Извлекает значение типа double из Unicode строки.
+* @param double* dest - указатель на переменную для сохранения значения.
+* @return void
+*/
+void ceres_extract_adc(unsigned char* frame, int* len, double* dest);
 ```
 
 
