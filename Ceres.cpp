@@ -204,7 +204,7 @@ void            ceres_q_load_event(unsigned char* frame, int* len, unsigned char
 
 
 /*S2000-KDL*/
-char             ceres_s2k_kdl_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest, unsigned char* event_dest)
+char             ceres_09_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest, unsigned char* event_dest)
 {
     *event_type_dest = *event_dest = 0;                                       //drop event type and event
 
@@ -242,14 +242,14 @@ char             ceres_s2k_kdl_event_type(unsigned char* frame, int* len, unsign
     return 0;
 };
 
-void             ceres_s2k_kdl_event_access(unsigned char* frame, unsigned char* event_dest, unsigned char code_dest[CERES_SIZE_CARD_CODE])
+void             ceres_09_event_access(unsigned char* frame, unsigned char* event_dest, unsigned char code_dest[CERES_SIZE_CARD_CODE])
 {
     *event_dest = frame[3];
     for (int i = 13; i > 3; i--) code_dest[13-i] = frame[i];
     return;
 };
 
-void             ceres_s2k_kdl_event_relay(unsigned char* frame, unsigned char* event_dest, unsigned char* relay_dest, unsigned char* program_dest)
+void             ceres_09_event_relay(unsigned char* frame, unsigned char* event_dest, unsigned char* relay_dest, unsigned char* program_dest)
 {
     *event_dest = frame[3];
     *relay_dest = frame[4];
@@ -257,14 +257,17 @@ void             ceres_s2k_kdl_event_relay(unsigned char* frame, unsigned char* 
     return;
 };
 
-void             ceres_s2k_kdl_event_common(unsigned char* frame, unsigned char* event_dest, unsigned char* zone_dest)
+void             ceres_09_event_common(unsigned char* frame, unsigned char* event_dest, unsigned char* zone_dest)
 {
     *event_dest = frame[3];
     *zone_dest = frame[4];
     return;
 };
 
-void            ceres_s2k_kdl_q_counter(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone)
+
+
+/*--------COUNTERS-------*/
+void            ceres_q_counter(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone)
 {
     frame[0] = *addr_s;
     frame[1] = 0x08;
@@ -283,7 +286,7 @@ void            ceres_s2k_kdl_q_counter(unsigned char* frame, int* len, unsigned
     return;
 }
 
-char            ceres_s2k_kdl_r_counter(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone, long long unsigned int* counter_dest)
+char            ceres_r_counter(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone, long long unsigned int* counter_dest)
 {
     *counter_dest = 0;
 
@@ -303,6 +306,8 @@ char            ceres_s2k_kdl_r_counter(unsigned char* frame, int* len, unsigned
 
     return 0;
 };
+
+
 
 /*--------ZONES-------*/
 void             ceres_q_zone_arm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone)
@@ -451,17 +456,17 @@ void             ceres_q_adc_v1(unsigned char* frame, int* len, unsigned char* a
     return;
 };
 
-char             ceres_r_adc_v1(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key)
+unsigned char*   ceres_r_adc_v1(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key)
 {
-    if (frame[0] != *addr_s) return -1;                         //check addr
-    if (ceres_crc_trim(frame, len)) return -1;                  //check crc
+    if (frame[0] != *addr_s) return nullptr;                         //check addr
+    if (ceres_crc_trim(frame, len)) return nullptr;                  //check crc
 
     ceres_base_transform(frame, len, global_key);
     ceres_additional_transform(frame, len, global_key, 0x3A);
 
     frame[*len] = 0x00;
 
-    return 0;
+    return frame + 4;
 };
 
 void             ceres_q_adc_v2(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone)
@@ -483,17 +488,17 @@ void             ceres_q_adc_v2(unsigned char* frame, int* len, unsigned char* a
     return;
 };
 
-char             ceres_r_adc_v2(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key)
+unsigned char*   ceres_r_adc_v2(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key)
 {
-    if (frame[0] != *addr_s) return -1;                         //check addr
-    if (ceres_crc_trim(frame, len)) return -1;                  //check crc
+    if (frame[0] != *addr_s) return nullptr;                         //check addr
+    if (ceres_crc_trim(frame, len)) return nullptr;                  //check crc
 
     ceres_base_transform(frame, len, global_key);
     ceres_additional_transform(frame, len, global_key, 0x58);
 
     frame[*len] = 0x00;
 
-    return 0;
+    return frame + 7;
 };
 
 void             ceres_extract_adc(unsigned char* frame, int* len, double* dest)
