@@ -34,8 +34,8 @@ int* len // указатель на переменную, хранящую ко�
 Для всех функций, формирующих запросы или производящих анализ ответов:
 
 ```cpp 
-addr_o //указатель на открытый адрес
-addr_s //указатель на закрытый адрес
+unsigned char* addr_o //указатель на открытый адрес
+unsigned char* addr_s //указатель на закрытый адрес
 unsigned char* global_key //указатель на глобаный ключ
 ```
 
@@ -54,15 +54,15 @@ unsigned char* global_key //указатель на глобаный ключ
 */
 void ceres_q_dev_info(unsigned char* frame, int* len, unsigned char* addr_o);
 
-	
+
 /** Анализ ответа на запрос для получения информации о устройстве.
-* @param unsigned char* type_dest 	- указатель на переменную для сохранения типа устройства.
-* @param unsigned char* ver_dest 	- указатель на переменную для сохранения версии устройства.
+* @param unsigned char* type_dest - указатель на переменную для сохранения типа устройства.
+* @param unsigned char* ver_dest - указатель на переменную для сохранения версии устройства.
 * @return
-* 0	- успешно.
+* 0 - успешно.
 * -1 - ошибка принятых данных.
 */
-char	ceres_r_dev_info(unsigned char* frame, int* len, unsigned char* addr_o, unsigned char* type_dest, unsigned char* ver_dest);
+char ceres_r_dev_info(unsigned char* frame, int* len, unsigned char* addr_o, unsigned char* type_dest, unsigned char* ver_dest);
 ```
 
 ### Переход на зашифрованный протокол обмена "Орион".
@@ -71,15 +71,15 @@ char	ceres_r_dev_info(unsigned char* frame, int* len, unsigned char* addr_o, uns
 /** Запрос на переход на зашифрованный протокол обмена.
 * @return void
 */
-void	ceres_q_sec_begin(unsigned char* frame, int* len, unsigned char* addr_o, unsigned char* global_key);
+void ceres_q_sec_begin(unsigned char* frame, int* len, unsigned char* addr_o, unsigned char* global_key);
 
-	
+
 /** Анализ ответа на запрос на переход на зашифрованный протокол обмена.
 * @return
-* 0	- успешно.
+* 0 - успешно.
 * -1 - ошибка принятых данных.
 */
-char	ceres_r_sec_begin(unsigned char* frame, int* len, unsigned char* addr_o, unsigned char* global_key);
+char ceres_r_sec_begin(unsigned char* frame, int* len, unsigned char* addr_o, unsigned char* global_key);
 ```
 
 ### Общее состояние шлейфа, выхода или прибора.
@@ -101,7 +101,7 @@ void ceres_q_state_simp(unsigned char* frame, int* len, unsigned char* addr_s, u
 * @param int* obtain_dest - указатель на переменную для сохранения количества полученных состояний.
 * @param unsigned char states_dest[CERES_SIZE_STATES_ARR] - указатель на буфер для сохранения состояний.
 * @return
-* 0	- успешно.
+* 0 - успешно.
 * -1 - ошибка принятых данных.
 */
 char ceres_r_state_simp(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone, int* obtain_dest, unsigned char states_dest[CERES_SIZE_STATES_ARR]);
@@ -120,13 +120,13 @@ char ceres_r_state_simp(unsigned char* frame, int* len, unsigned char* addr_s, u
 */
 void ceres_q_state_ext(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
 
-	
+
 /** Анализ ответа на запрос на получение расширенного состояния шлейфа, выхода или прибора.
-* @param unsigned char zone		- номер шлейфа или выхода.
-* @param int* obtain_dest		- указатель на переменную для сохранения количества полученных состояний.
+* @param unsigned char zone - номер шлейфа или выхода.
+* @param int* obtain_dest - указатель на переменную для сохранения количества полученных состояний.
 * @param unsigned char states_dest[CERES_SIZE_STATES_ARR]	- указатель на буфер для сохранения состояний.
 * @return
-* 0	- успешно.
+* 0 - успешно.
 * -1 - ошибка принятых данных.
 */
 char ceres_r_state_ext(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone, int* obtain_dest, unsigned char states_dest[CERES_SIZE_STATES_ARR]);
