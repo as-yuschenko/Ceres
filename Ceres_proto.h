@@ -1,13 +1,13 @@
 /*MIT License
 
+---Ceres lib---
+
 Copyright (c) 2024 Aleksandr Yuschenko
 
 For Contact:
-
+https://github.com/as-yuschenko/Ceres
 https://t.me/Alex_Yuschenko
 mailto:a.s.yuschenko@gmail.com
-
----Ceres lib---
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -52,15 +52,15 @@ const unsigned char     ceres_crc_table[] =
     0x74,0x2A,0xC8,0x96,0x15,0x4B,0xA9,0xF7,0xB6,0xFC,0x0A,0x54,0xD7,0x89,0x6B,0x35
 };
 
+const unsigned char ceres_counter_table[] = {0x07, 0x04, 0x05, 0x02 , 0x03, 0x00, 0x01, 0x0e, 0x0f, 0x0c, 0x0d, 0x0a, 0x0b, 0x08, 0x09, 0x06};
+
 unsigned char           ceres_crc_calc(unsigned char* frame, int* len);
 void                    ceres_crc_add (unsigned char* frame, int* len);
 char                    ceres_crc_trim (unsigned char* frame, int* len);
 unsigned char           ceres_msg_keygen();
-void                    ceres_base_transform(unsigned char* frame, int* len, unsigned char* global_key);
-void                    ceres_additional_transform(unsigned char* frame, int* len, unsigned char* global_key, unsigned char cmd);
-unsigned char           ceres_sniff_dev_key(unsigned char* frame, int* len, unsigned char addr);
-
-
+void                    ceres_request_transform(unsigned char* frame, int* len, unsigned char* global_key);
+void                    ceres_reply_transform(unsigned char* frame, int* len, unsigned char cmd);
+unsigned char           ceres_counter_calc(int iteration);
 
 
 #endif // CERES_PROTO_H_INCLUDED

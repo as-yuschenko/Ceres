@@ -1,13 +1,13 @@
 /*MIT License
 
+---Ceres lib---
+
 Copyright (c) 2024 Aleksandr Yuschenko
 
 For Contact:
-
+https://github.com/as-yuschenko/Ceres
 https://t.me/Alex_Yuschenko
 mailto:a.s.yuschenko@gmail.com
-
----Ceres lib---
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -117,13 +117,13 @@ void            ceres_q_state_simp(unsigned char* frame, int* len, unsigned char
 
     *len = frame[1] ;
 
-    ceres_base_transform(frame, len, global_key);
+    ceres_request_transform(frame, len, global_key);
 
     ceres_crc_add(frame, len);
     return;
 };
 
-char             ceres_r_state_simp(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone, int* obtain_dest, unsigned char states_dest[CERES_SIZE_STATES_ARR])
+char            ceres_r_state_simp(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char zone, int* obtain_dest, unsigned char states_dest[CERES_SIZE_STATES_ARR])
 {
     memset(states_dest, 0x00, CERES_SIZE_STATES_ARR);
     *obtain_dest = 0;
@@ -131,8 +131,7 @@ char             ceres_r_state_simp(unsigned char* frame, int* len, unsigned cha
     if (frame[0] != *addr_s) return -1;                         //check addr
     if (ceres_crc_trim(frame, len)) return -1;                  //check crc
 
-    ceres_base_transform(frame, len, global_key);
-    ceres_additional_transform(frame, len, global_key, 0x1A);
+    ceres_reply_transform(frame, len, 0x1A);
 
     if (frame[3] == zone)
     {
@@ -152,7 +151,7 @@ char             ceres_r_state_simp(unsigned char* frame, int* len, unsigned cha
 };
 
 
-//SIMPLE
+//EXTENDED
 void                    ceres_q_state_ext(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone)
 {
     frame[0] = *addr_s;
@@ -166,13 +165,13 @@ void                    ceres_q_state_ext(unsigned char* frame, int* len, unsign
 
     *len = frame[1] ;
 
-    ceres_base_transform(frame, len, global_key);
+    ceres_request_transform(frame, len, global_key);
 
     ceres_crc_add(frame, len);
     return;
 };
 
-char             ceres_r_state_ext(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone, int* obtain_dest, unsigned char states_dest[CERES_SIZE_STATES_ARR])
+char             ceres_r_state_ext(unsigned char* frame, int* len, unsigned char* addr_s,  unsigned char zone, int* obtain_dest, unsigned char states_dest[CERES_SIZE_STATES_ARR])
 {
     memset(states_dest, 0x00, CERES_SIZE_STATES_ARR);
     *obtain_dest = 0;
@@ -180,8 +179,7 @@ char             ceres_r_state_ext(unsigned char* frame, int* len, unsigned char
     if (frame[0] != *addr_s) return -1;                         //check addr
     if (ceres_crc_trim(frame, len)) return -1;                  //check crc
 
-    ceres_base_transform(frame, len, global_key);
-    ceres_additional_transform(frame, len, global_key, 0x58);
+    ceres_reply_transform(frame, len, 0x58);
 
     if (frame[4] != zone) return -1;
 
@@ -207,7 +205,7 @@ void            ceres_q_read_event(unsigned char* frame, int* len, unsigned char
 
     *len = frame[1] ;
 
-    ceres_base_transform(frame, len, global_key);
+    ceres_request_transform(frame, len, global_key);
 
     ceres_crc_add(frame, len);
     return;
@@ -224,7 +222,7 @@ void            ceres_q_load_event(unsigned char* frame, int* len, unsigned char
 
     *len = frame[1];
 
-    ceres_base_transform(frame, len, global_key);
+    ceres_request_transform(frame, len, global_key);
 
     ceres_crc_add(frame, len);
     return;
@@ -234,32 +232,30 @@ void            ceres_q_load_event(unsigned char* frame, int* len, unsigned char
 
 
 /*S2000-KDL*/
-char             ceres_09_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest, unsigned char* event_dest)
+char             ceres_09_event_type(unsigned char* frame, int* len, unsigned char* addr_s, int* event_type_dest, unsigned char* event_dest)
 {
     *event_type_dest = *event_dest = 0;                                       //drop event type and event
 
     if (frame[0] != *addr_s) return -1;                         //check addr
     if (ceres_crc_trim(frame, len)) return -1;                  //check crc
 
-    ceres_base_transform(frame, len, global_key);
-
     if ((frame[1] < 0x0A))                                      // online, event is not access
     {
-        ceres_additional_transform(frame, len, global_key, 0x04);
+        ceres_reply_transform(frame, len, 0x04);
         if ((frame[1] == 0x05) && (frame[4] == 0x06)) return 1; //no event
     }
     else if ((frame[1] == 0x0E))                                // online, event is access
     {
-        ceres_additional_transform(frame, len, global_key, 0x0E);
+        ceres_reply_transform(frame, len, 0x0E);
     }
     else if ((frame[1] == 0x10))                                // from buffer, event is access
     {
-        ceres_additional_transform(frame, len, global_key, 0x04);
+        ceres_reply_transform(frame, len, 0x04);
     }
 
     else if ((frame[1] > 0x0A))                                 // from buffer event is not access
     {
-        ceres_additional_transform(frame, len, global_key, 0x0C);
+        ceres_reply_transform(frame, len, 0x0C);
     }
     else                                                        //error
     {
@@ -310,21 +306,20 @@ void            ceres_q_counter(unsigned char* frame, int* len, unsigned char* a
 
     *len = frame[1] ;
 
-    ceres_base_transform(frame, len, global_key);
+    ceres_request_transform(frame, len, global_key);
 
     ceres_crc_add(frame, len);
     return;
 }
 
-char            ceres_r_counter(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone, long long unsigned int* counter_dest)
+char            ceres_r_counter(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char zone, long long unsigned int* counter_dest)
 {
     *counter_dest = 0;
 
     if (frame[0] != *addr_s) return -1;                         //check addr
     if (ceres_crc_trim(frame, len)) return -1;                  //check crc
 
-    ceres_base_transform(frame, len, global_key);
-    ceres_additional_transform(frame, len, global_key, 0x58);
+    ceres_reply_transform(frame, len,  0x58);
 
     if (frame[4] != zone) return -1;
 
@@ -351,20 +346,19 @@ void             ceres_q_zone_arm(unsigned char* frame, int* len, unsigned char*
 
     *len = frame[1] ;
 
-    ceres_base_transform(frame, len, global_key);
+    ceres_request_transform(frame, len, global_key);
 
     ceres_crc_add(frame, len);
     return;
 
 };
 
-char             ceres_r_zone_arm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone)
+char             ceres_r_zone_arm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char zone)
 {
     if (frame[0] != *addr_s) return -1;                         //check addr
     if (ceres_crc_trim(frame, len)) return -1;                  //check crc
 
-    ceres_base_transform(frame, len, global_key);
-    ceres_additional_transform(frame, len, global_key, 0x14);
+    ceres_reply_transform(frame, len, 0x14);
 
     if ((frame[3] == zone) && (frame[4] == 0x02)) return 0;
 
@@ -382,20 +376,19 @@ void             ceres_q_zone_disarm(unsigned char* frame, int* len, unsigned ch
 
     *len = frame[1] ;
 
-    ceres_base_transform(frame, len, global_key);
+    ceres_request_transform(frame, len, global_key);
 
     ceres_crc_add(frame, len);
     return;
 
 };
 
-char             ceres_r_zone_disarm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone)
+char             ceres_r_zone_disarm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char zone)
 {
     if (frame[0] != *addr_s) return -1;                         //check addr
     if (ceres_crc_trim(frame, len)) return -1;                  //check crc
 
-    ceres_base_transform(frame, len, global_key);
-    ceres_additional_transform(frame, len, global_key, 0x14);
+    ceres_reply_transform(frame, len, 0x14);
 
     if ((frame[3] == zone) && (frame[4] == 0x00)) return 0;
 
@@ -416,20 +409,19 @@ void             ceres_q_relay_on(unsigned char* frame, int* len, unsigned char*
 
     *len = frame[1] ;
 
-    ceres_base_transform(frame, len, global_key);
+    ceres_request_transform(frame, len, global_key);
 
     ceres_crc_add(frame, len);
     return;
 
 };
 
-char             ceres_r_relay_on(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay)
+char             ceres_r_relay_on(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char relay)
 {
     if (frame[0] != *addr_s) return -1;                         //check addr
     if (ceres_crc_trim(frame, len)) return -1;                  //check crc
 
-    ceres_base_transform(frame, len, global_key);
-    ceres_additional_transform(frame, len, global_key, 0x16);
+    ceres_reply_transform(frame, len, 0x16);
 
     if ((frame[3] == relay) && (frame[4] == 0x01)) return 0;
 
@@ -447,20 +439,19 @@ void             ceres_q_relay_off(unsigned char* frame, int* len, unsigned char
 
     *len = frame[1] ;
 
-    ceres_base_transform(frame, len, global_key);
+    ceres_request_transform(frame, len, global_key);
 
     ceres_crc_add(frame, len);
     return;
 
 };
 
-char             ceres_r_relay_off(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay)
+char             ceres_r_relay_off(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char relay)
 {
     if (frame[0] != *addr_s) return -1;                         //check addr
     if (ceres_crc_trim(frame, len)) return -1;                  //check crc
 
-    ceres_base_transform(frame, len, global_key);
-    ceres_additional_transform(frame, len, global_key, 0x16);
+    ceres_reply_transform(frame, len, 0x16);
 
     if ((frame[3] == relay) && (frame[4] == 0x02)) return 0;
 
@@ -480,19 +471,18 @@ void             ceres_q_adc_v1(unsigned char* frame, int* len, unsigned char* a
 
     *len = frame[1] ;
 
-    ceres_base_transform(frame, len, global_key);
+    ceres_request_transform(frame, len, global_key);
 
     ceres_crc_add(frame, len);
     return;
 };
 
-unsigned char*   ceres_r_adc_v1(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key)
+unsigned char*   ceres_r_adc_v1(unsigned char* frame, int* len, unsigned char* addr_s)
 {
     if (frame[0] != *addr_s) return nullptr;                         //check addr
     if (ceres_crc_trim(frame, len)) return nullptr;                  //check crc
 
-    ceres_base_transform(frame, len, global_key);
-    ceres_additional_transform(frame, len, global_key, 0x3A);
+    ceres_reply_transform(frame, len, 0x3A);
 
     frame[*len] = 0x00;
 
@@ -512,19 +502,18 @@ void             ceres_q_adc_v2(unsigned char* frame, int* len, unsigned char* a
 
     *len = frame[1] ;
 
-    ceres_base_transform(frame, len, global_key);
+    ceres_request_transform(frame, len, global_key);
 
     ceres_crc_add(frame, len);
     return;
 };
 
-unsigned char*   ceres_r_adc_v2(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key)
+unsigned char*   ceres_r_adc_v2(unsigned char* frame, int* len, unsigned char* addr_s)
 {
     if (frame[0] != *addr_s) return nullptr;                         //check addr
     if (ceres_crc_trim(frame, len)) return nullptr;                  //check crc
 
-    ceres_base_transform(frame, len, global_key);
-    ceres_additional_transform(frame, len, global_key, 0x58);
+    ceres_reply_transform(frame, len, 0x58);
 
     frame[*len] = 0x00;
 

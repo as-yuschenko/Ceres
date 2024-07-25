@@ -1,13 +1,13 @@
 /*MIT License
 
+---Ceres lib---
+
 Copyright (c) 2024 Aleksandr Yuschenko
 
 For Contact:
-
+https://github.com/as-yuschenko/Ceres
 https://t.me/Alex_Yuschenko
 mailto:a.s.yuschenko@gmail.com
-
----Ceres lib---
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
