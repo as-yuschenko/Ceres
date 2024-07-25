@@ -33,8 +33,7 @@ SOFTWARE.
 #include <time.h>
 #include <cstring>
 #include <cstdio>
-#include "Ceres_events.h"
-#include "Ceres_proto.h"
+
 
 void ceres_init ()
 {
@@ -569,6 +568,25 @@ void             ceres_extract_adc(unsigned char* frame, int* len, long int* des
     return;
 }
 
+/*--------NAMES-------*/
+const char*             ceres_name_dev(unsigned char type)
+{
+    for (int i = 0; i < CERES_SIZE_DEV_NAMES_ARR; i++)
+    {
+        if (CERES_DEV_TYPE[i] == type) return CERES_DEV_NAMES[i];
+    }
+    return nullptr;
+};
+
+const char*             ceres_name_event(unsigned char event)
+{
+    return CERES_EVENT_DESC_ARR[event];
+};
+
+const char*             ceres_name_event_trnslt(unsigned char event)
+{
+    return CERES_EVENT_DESC_TRNSLT_ARR[event];
+};
 
 
 

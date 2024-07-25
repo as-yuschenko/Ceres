@@ -40,10 +40,17 @@ SOFTWARE.
 #define CERES_ET_ACCESS       32
 #define CERES_ET_TECH         64
 
-
+#define CERES_ET_IS_COMMON(event) ({char ret = 0; if (event == CERES_ET_COMMON)   ret = 1; ret;})
+#define CERES_ET_IS_ALARM(event) ({char ret = 0; if (event == CERES_ET_ALARM)    ret = 1; ret;})
+#define CERES_ET_IS_ARM(event) ({char ret = 0; if (event == CERES_ET_ARM)      ret = 1; ret;})
+#define CERES_ET_IS_TROUBLE(event) ({char ret = 0; if (event == CERES_ET_TROUBLE)  ret = 1; ret;})
+#define CERES_ET_IS_RECOVERY(event) ({char ret = 0; if (event == CERES_ET_RECOVERY) ret = 1; ret;})
+#define CERES_ET_IS_RELAY(event) ({char ret = 0; if (event == CERES_ET_RELAY)    ret = 1; ret;})
+#define CERES_ET_IS_ACCESS(event) ({char ret = 0; if (event == CERES_ET_ACCESS)   ret = 1; ret;})
+#define CERES_ET_IS_TECH(event) ({char ret = 0; if (event == CERES_ET_TECH)     ret = 1; ret;})
 
 extern const char* CERES_EVENT_DESC_ARR[256];
 extern const char* CERES_EVENT_DESC_TRNSLT_ARR[256];
 extern const unsigned char CERES_EVENT_TYPE_ARR[256];
-#endif // CERES_EVENTS_H_INCLUDED
 
+#endif // CERES_EVENTS_H_INCLUDED

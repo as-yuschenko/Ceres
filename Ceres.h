@@ -31,9 +31,13 @@ SOFTWARE.
 #ifndef CERES_H_INCLUDED
 #define CERES_H_INCLUDED
 
-
 #define CERES_SIZE_CARD_CODE                10
 #define CERES_SIZE_STATES_ARR               5
+
+
+#include "Ceres_events.h"
+#include "Ceres_devices.h"
+#include "Ceres_proto.h"
 
 void ceres_begin ();
 void ceres_free ();
@@ -128,6 +132,15 @@ unsigned char*          ceres_r_adc_v2(unsigned char* frame, int* len, unsigned 
 
 void                    ceres_extract_adc(unsigned char* frame, int* len, double* dest);
 void                    ceres_extract_adc(unsigned char* frame, int* len, long int* dest);
+
+
+/*--------NAMES-------*/
+const char*             ceres_name_dev(unsigned char type);
+
+const char*             ceres_name_event(unsigned char event);
+
+const char*             ceres_name_event_trnslt(unsigned char event);
+
 #endif // CERES_H_INCLUDED
 
 
