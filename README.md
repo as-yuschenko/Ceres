@@ -392,58 +392,28 @@ void ceres_q_counter(unsigned char* frame, int* len, unsigned char* addr_s, unsi
 char ceres_r_counter(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone, long long unsigned int* counter_dest);
 ```
 
+### Текстовые значения.
 
+```cpp
+/** Получение строки с названием прибора. Кириллица.
+* @param unsigned char event - тип прибора.
+* @return 
+* Указатель на строку данных.
+*/
+const char* ceres_name_dev(unsigned char type);
 
+/** Получение строки с именем события. Кириллица.
+* @param unsigned char event - код события.
+* @return 
+* Указатель на строку данных.
+*/
+const char* ceres_name_event(unsigned char event);
 
+/** Получение строки с именем события. Латиница. Транслит.
+* @param unsigned char event - код события.
+* @return 
+* Указатель на строку данных.
+*/
+const char* ceres_name_event_trnslt(unsigned char event);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```
