@@ -49,6 +49,7 @@ SOFTWARE.
 #define CERES_ET_IS_ACCESS(event) ({char ret = 0; if (event == CERES_ET_ACCESS)   ret = 1; ret;})
 #define CERES_ET_IS_TECH(event) ({char ret = 0; if (event == CERES_ET_TECH)     ret = 1; ret;})
 
+
 extern const char* CERES_EVENT_DESC_ARR[256];
 extern const char* CERES_EVENT_DESC_TRNSLT_ARR[256];
 extern const unsigned char CERES_EVENT_TYPE_ARR[256];
