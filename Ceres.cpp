@@ -573,7 +573,7 @@ const char*             ceres_name_dev(unsigned char type)
 {
     for (int i = 0; i < CERES_SIZE_DEV_NAMES_ARR; i++)
     {
-        if (CERES_DEV_TYPE[i] == type) return CERES_DEV_NAMES[i];
+        if (CERES_DEV_TYPE[i][0] == type) return CERES_DEV_NAMES[i];
     }
     return nullptr;
 };

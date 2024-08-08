@@ -33,7 +33,7 @@ SOFTWARE.
 
 #define CERES_SIZE_DEV_NAMES_ARR          53
 
-extern const unsigned char CERES_DEV_TYPE[CERES_SIZE_DEV_NAMES_ARR];
+extern const unsigned char CERES_DEV_TYPE[CERES_SIZE_DEV_NAMES_ARR][3];
 extern const char* CERES_DEV_NAMES[CERES_SIZE_DEV_NAMES_ARR];
 
 #endif // CERES_DEVICES_H_INCLUDED
