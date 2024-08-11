@@ -34,6 +34,7 @@ SOFTWARE.
 #include <cstring>
 #include <cstdio>
 
+unsigned char ceres_msg_key;
 
 void ceres_init ()
 {
@@ -195,9 +196,11 @@ char             ceres_r_state_ext(unsigned char* frame, int* len, unsigned char
 /*--EVENTS--*/
 void            ceres_q_read_event(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key)
 {
+    ceres_msg_key = ceres_msg_keygen();
+
     frame[0] = *addr_s;
     frame[1] = 0x06;
-    frame[2] = ceres_msg_keygen();
+    frame[2] = ceres_msg_key;
     frame[3] = 0x01;
     frame[4] = 0x00;
     frame[5] = 0xf7;
@@ -231,17 +234,17 @@ void            ceres_q_load_event(unsigned char* frame, int* len, unsigned char
 
 
 /*S2000-KDL*/
-char             ceres_09_event_type(unsigned char* frame, int* len, unsigned char* addr_s, int* event_type_dest, unsigned char* event_dest)
+char             ceres_09_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest, unsigned char* event_dest)
 {
-    *event_type_dest = *event_dest = 0;                                       //drop event type and event
+    *event_type_dest = *event_dest = 0;                          //drop event type and event
 
     if (frame[0] != *addr_s) return -1;                         //check addr
     if (ceres_crc_trim(frame, len)) return -1;                  //check crc
 
     if ((frame[1] < 0x0A))                                      // online, event is not access
     {
+        if ((frame[2] ^ ceres_msg_key ^ *global_key) == 0x02) return 1; //no event
         ceres_reply_transform(frame, len, 0x04);
-        if ((frame[1] == 0x05) && (frame[4] == 0x06)) return 1; //no event
     }
     else if ((frame[1] == 0x0E))                                // online, event is access
     {
