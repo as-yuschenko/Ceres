@@ -27,13 +27,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+#ifndef CERES_NAMES_H_INCLUDED
+#define CERES_NAMES_H_INCLUDED
 
-#ifndef CERES_DEVICES_H_INCLUDED
-#define CERES_DEVICES_H_INCLUDED
+#include "Ceres.h"
 
-#define CERES_SIZE_DEV_NAMES_ARR          53
+extern const char*      CERES_DEV_NAMES[CERES_SIZE_DEV_NAMES_ARR];
+extern const char*      CERES_EVENT_DESC_ARR[256];
+extern const char*      CERES_EVENT_DESC_TRNSLT_ARR[256];
 
-extern const unsigned char CERES_DEV_TYPE[CERES_SIZE_DEV_NAMES_ARR][3];
-extern const char* CERES_DEV_NAMES[CERES_SIZE_DEV_NAMES_ARR];
 
-#endif // CERES_DEVICES_H_INCLUDED
+/*--------NAMES-------*/
+const char*             ceres_name_dev(unsigned char type);
+const char*             ceres_name_event(unsigned char event);
+const char*             ceres_name_event_trnslt(unsigned char event);
+
+#endif // CERES_NAMES_H_INCLUDED

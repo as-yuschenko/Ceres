@@ -33,13 +33,25 @@ SOFTWARE.
 
 #define CERES_SIZE_CARD_CODE                10
 #define CERES_SIZE_STATES_ARR               5
+#define CERES_SIZE_DEV_NAMES_ARR            53
 
+#define CERES_ET_COMMON                     0
+#define CERES_ET_ALARM                      1
+#define CERES_ET_ARM                        2
+#define CERES_ET_TROUBLE                    4
+#define CERES_ET_RECOVERY                   8
+#define CERES_ET_RELAY                      16
+#define CERES_ET_ACCESS                     32
+#define CERES_ET_TECH                       64
 
-#include "Ceres_events.h"
-#include "Ceres_devices.h"
 #include "Ceres_proto.h"
 
-void ceres_begin ();
+
+extern const unsigned char CERES_EVENT_TYPE_ARR[256];
+extern const unsigned char CERES_DEV_TYPE[CERES_SIZE_DEV_NAMES_ARR][3];
+
+
+void ceres_init ();
 void ceres_free ();
 
 
@@ -76,12 +88,6 @@ void                    ceres_q_load_event(unsigned char* frame, int* len, unsig
 
 
 /*S2000-KDL*/
-/** Store event type if event exist into [event_type_dest], if no event or error, stores zero.
-    @return
-    [-1]    error
-    [0]     event
-    [1]     no event
-*/
 char                    ceres_09_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest, unsigned char* event_dest);
 
 void                    ceres_09_event_access(unsigned char* frame, unsigned char* event_dest, unsigned char code_dest[CERES_SIZE_CARD_CODE]);
@@ -134,12 +140,6 @@ void                    ceres_extract_adc(unsigned char* frame, int* len, double
 void                    ceres_extract_adc(unsigned char* frame, int* len, long int* dest);
 
 
-/*--------NAMES-------*/
-const char*             ceres_name_dev(unsigned char type);
-
-const char*             ceres_name_event(unsigned char event);
-
-const char*             ceres_name_event_trnslt(unsigned char event);
 
 #endif // CERES_H_INCLUDED
 
