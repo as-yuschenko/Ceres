@@ -88,13 +88,13 @@ void                    ceres_q_load_event(unsigned char* frame, int* len, unsig
 
 
 /*S2000-KDL*/
-char                    ceres_09_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest, unsigned char* event_dest);
+char                    ceres_09_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest, unsigned char* event_num_dest);
 
-void                    ceres_09_event_access(unsigned char* frame, unsigned char* event_dest, unsigned char code_dest[CERES_SIZE_CARD_CODE]);
+void                    ceres_09_event_access(unsigned char* frame, unsigned char* event_num_dest, unsigned char code_dest[CERES_SIZE_CARD_CODE]);
 
-void                    ceres_09_event_relay(unsigned char* frame, unsigned char* event_dest, unsigned char* relay_dest, unsigned char* program_dest);
+void                    ceres_09_event_relay(unsigned char* frame, unsigned char* event_num_dest, unsigned char* relay_dest, unsigned char* program_dest);
 
-void                    ceres_09_event_common(unsigned char* frame, unsigned char* event_dest, unsigned char* zone_dest);
+void                    ceres_09_event_common(unsigned char* frame, unsigned char* event_num_dest, unsigned char* zone_dest);
 
 
 
@@ -136,8 +136,8 @@ void                    ceres_q_adc_v2(unsigned char* frame, int* len, unsigned 
 
 unsigned char*          ceres_r_adc_v2(unsigned char* frame, int* len, unsigned char* addr_s);
 
-void                    ceres_extract_adc(unsigned char* frame, int* len, double* dest);
-void                    ceres_extract_adc(unsigned char* frame, int* len, long int* dest);
+void                    ceres_extract_adc(unsigned char* frame, double* dest);
+void                    ceres_extract_adc(unsigned char* frame, long int* dest);
 
 
 

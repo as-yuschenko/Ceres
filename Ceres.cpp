@@ -234,9 +234,9 @@ void            ceres_q_load_event(unsigned char* frame, int* len, unsigned char
 
 
 /*S2000-KDL*/
-char             ceres_09_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest, unsigned char* event_dest)
+char             ceres_09_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest, unsigned char* event_num_dest)
 {
-    *event_type_dest = *event_dest = 0;                          //drop event type and event
+    *event_type_dest = *event_num_dest = 0;                          //drop event type and event
 
     if (frame[0] != *addr_s) return -1;                         //check addr
     if (ceres_crc_trim(frame, len)) return -1;                  //check crc
@@ -266,28 +266,28 @@ char             ceres_09_event_type(unsigned char* frame, int* len, unsigned ch
     }
 
     *event_type_dest = CERES_EVENT_TYPE_ARR[(int)(frame[3])];
-    *event_dest = frame[3];
+    *event_num_dest = frame[3];
     return 0;
 };
 
-void             ceres_09_event_access(unsigned char* frame, unsigned char* event_dest, unsigned char code_dest[CERES_SIZE_CARD_CODE])
+void             ceres_09_event_access(unsigned char* frame, unsigned char* event_num_dest, unsigned char code_dest[CERES_SIZE_CARD_CODE])
 {
-    *event_dest = frame[3];
+    *event_num_dest = frame[3];
     for (int i = 13; i > 3; i--) code_dest[13-i] = frame[i];
     return;
 };
 
-void             ceres_09_event_relay(unsigned char* frame, unsigned char* event_dest, unsigned char* relay_dest, unsigned char* program_dest)
+void             ceres_09_event_relay(unsigned char* frame, unsigned char* event_num_dest, unsigned char* relay_dest, unsigned char* program_dest)
 {
-    *event_dest = frame[3];
+    *event_num_dest = frame[3];
     *relay_dest = frame[4];
     *program_dest = frame[5];
     return;
 };
 
-void             ceres_09_event_common(unsigned char* frame, unsigned char* event_dest, unsigned char* zone_dest)
+void             ceres_09_event_common(unsigned char* frame, unsigned char* event_num_dest, unsigned char* zone_dest)
 {
-    *event_dest = frame[3];
+    *event_num_dest = frame[3];
     *zone_dest = frame[4];
     return;
 };
@@ -522,12 +522,12 @@ unsigned char*   ceres_r_adc_v2(unsigned char* frame, int* len, unsigned char* a
     return frame + 7;
 };
 
-void             ceres_extract_adc(unsigned char* frame, int* len, double* dest)
+void             ceres_extract_adc(unsigned char* frame, double* dest)
 {
     int l = 0;
     int factor = 1;
     char* pos = nullptr;
-    for (int p = 3; p < *len; p++)
+    for (int p = 3; p < strlen((const char*)(frame)); p++)
     {
         if (((frame[p] >= 0x30) && (frame[p] <= 0x39)) || (frame[p] == 0x2E) || (frame[p] == 0x2C))
         {
@@ -546,12 +546,12 @@ void             ceres_extract_adc(unsigned char* frame, int* len, double* dest)
     *dest = strtod(pos, nullptr) * factor;
     return;
 }
-void             ceres_extract_adc(unsigned char* frame, int* len, long int* dest)
+void             ceres_extract_adc(unsigned char* frame, long int* dest)
 {
     int l = 0;
     int factor = 1;
     char* pos = nullptr;
-    for (int p = 3; p < *len; p++)
+    for (int p = 3; p < strlen((const char*)(frame)); p++)
     {
         if ((frame[p] >= 0x30) && (frame[p] <= 0x39))
         {

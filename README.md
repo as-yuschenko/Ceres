@@ -12,7 +12,14 @@
 + Получать коды проксимити-карт при событиях СКУД;
 + Получать информацию о типах и версиях приборов.
 
-Обмен данными с приборами компании Болид производится по "зашифрованному" протоколу "Орион". Для работы библиотеки требуется буфер, который вы можете создать любым, удобным вам способом. Рекомендуемый размер буфера - 100 байт. 
+Обмен данными с приборами компании Болид производится по "зашифрованному" протоколу "Орион". 
+
+## Для связи:
+https://t.me/vsyst_ru <br />
+mailto:a.s.yuschenko@gmail.com <br />
+
+## MAN
+Для работы библиотеки требуется буфер, который вы можете создать любым, удобным вам способом. Рекомендуемый размер буфера - 100 байт. 
 
 Библиотека разделена на две части: функциональную и текстовую. 
 
@@ -393,16 +400,18 @@ unsigned char* ceres_r_adc_v2(unsigned char* frame, int* len, unsigned char* add
 
 ```cpp
 /** Извлекает знаковое значение типа long int из Unicode строки.
+* @param unsigned char* frame - Нуль-терминированная С-строка, после обработки ответа функциями ceres_r_adc_v1(_v2).
 * @param long int* dest - указатель на переменную для сохранения значения.
 * @return void
 */
-void ceres_extract_adc(unsigned char* frame, int* len, long int* dest);
+void ceres_extract_adc(unsigned char* frame, long int* dest);
 
 /** Извлекает значение типа double из Unicode строки.
+* @param unsigned char* frame - Нуль-терминированная С-строка, после обработки ответа функциями ceres_r_adc_v1(_v2).
 * @param double* dest - указатель на переменную для сохранения значения.
 * @return void
 */
-void ceres_extract_adc(unsigned char* frame, int* len, double* dest);
+void ceres_extract_adc(unsigned char* frame, double* dest);
 ```
 
 ### Запрос данных счетчика.
