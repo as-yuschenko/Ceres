@@ -48,6 +48,7 @@ SOFTWARE.
 
 
 extern const unsigned char CERES_EVENT_TYPE_ARR[256];
+extern const unsigned char CERES_EVENT_PRIORITY_ARR[256];
 extern const unsigned char CERES_DEV_TYPE[CERES_SIZE_DEV_NAMES_ARR][3];
 
 
