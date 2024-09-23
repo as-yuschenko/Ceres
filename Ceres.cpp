@@ -123,7 +123,7 @@ void            ceres_q_state_simp(unsigned char* frame, int* len, unsigned char
     return;
 };
 
-char            ceres_r_state_simp(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char zone, int* obtain_dest, unsigned char states_dest[CERES_SIZE_STATES_ARR])
+char            ceres_r_state_simp(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char zone, unsigned char* obtain_dest, unsigned char states_dest[CERES_SIZE_STATES_ARR])
 {
     memset(states_dest, 0x00, CERES_SIZE_STATES_ARR);
     *obtain_dest = 0;
@@ -171,7 +171,7 @@ void                    ceres_q_state_ext(unsigned char* frame, int* len, unsign
     return;
 };
 
-char             ceres_r_state_ext(unsigned char* frame, int* len, unsigned char* addr_s,  unsigned char zone, int* obtain_dest, unsigned char states_dest[CERES_SIZE_STATES_ARR])
+char             ceres_r_state_ext(unsigned char* frame, int* len, unsigned char* addr_s,  unsigned char zone, unsigned char* obtain_dest, unsigned char states_dest[CERES_SIZE_STATES_ARR])
 {
     memset(states_dest, 0x00, CERES_SIZE_STATES_ARR);
     *obtain_dest = 0;
@@ -290,6 +290,38 @@ void             ceres_09_event_common(unsigned char* frame, unsigned char* even
     *event_num_dest = frame[3];
     *zone_dest = frame[4];
     return;
+};
+
+
+
+/*ALARMS*/
+void            ceres_q_drop_alarm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key)
+{
+    frame[0] = *addr_s;
+    frame[1] = 0x06;
+    frame[2] = ceres_msg_keygen();
+    frame[3] = 0x17;
+    frame[4] = 0x00;
+    frame[5] = 0x01;
+
+    *len = frame[1] ;
+
+    ceres_request_transform(frame, len, global_key);
+
+    ceres_crc_add(frame, len);
+    return;
+};
+
+char            ceres_r_drop_alarm(unsigned char* frame, int* len, unsigned char* addr_s)
+{
+    if (frame[0] != *addr_s) return -1;                         //check addr
+    if (ceres_crc_trim(frame, len)) return -1;                  //check crc
+
+    ceres_reply_transform(frame, len, 0x18);
+
+    if ((frame[3] == 0x00) && (frame[4] == 0x01)) return 0;
+
+    return -1;
 };
 
 

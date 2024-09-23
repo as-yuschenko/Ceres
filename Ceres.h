@@ -56,32 +56,32 @@ void ceres_init ();
 void ceres_free ();
 
 
-/*--DEVICE--*/
+/*--------DEVICE--------*/
 void                    ceres_q_dev_info(unsigned char* frame, int* len, unsigned char* addr_o);
 
 char                    ceres_r_dev_info(unsigned char* frame, int* len, unsigned char* addr_o, unsigned char* type_dest, unsigned char* ver_dest);
 
 
-/*--GO SEC MODE--*/
+/*--------GO SEC MODE--------*/
 void                    ceres_q_sec_begin(unsigned char* frame, int* len, unsigned char* addr_o, unsigned char* global_key);
 
 char                    ceres_r_sec_begin(unsigned char* frame, int* len, unsigned char* addr_o, unsigned char* global_key);
 
 
-/*--STATES--*/
+/*--------STATES--------*/
 //SIMPLE
 void                    ceres_q_state_simp(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
 
-char                    ceres_r_state_simp(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char zone, int* obtain_dest, unsigned char states_dest[CERES_SIZE_STATES_ARR]);
+char                    ceres_r_state_simp(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char zone, unsigned char* obtain_dest, unsigned char states_dest[CERES_SIZE_STATES_ARR]);
 
 //EXTENDED
 void                    ceres_q_state_ext(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
 
-char                    ceres_r_state_ext(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char zone, int* obtain_dest, unsigned char states_dest[CERES_SIZE_STATES_ARR]);
+char                    ceres_r_state_ext(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char zone, unsigned char* obtain_dest, unsigned char states_dest[CERES_SIZE_STATES_ARR]);
 
 
 
-/*--EVENTS--*/
+/*--------EVENTS--------*/
 void                    ceres_q_read_event(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key);
 
 void                    ceres_q_load_event(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key);
@@ -97,6 +97,10 @@ void                    ceres_09_event_relay(unsigned char* frame, unsigned char
 
 void                    ceres_09_event_common(unsigned char* frame, unsigned char* event_num_dest, unsigned char* zone_dest);
 
+/*--------ALARMS--------*/
+void                    ceres_q_drop_alarm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key);
+
+char                    ceres_r_drop_alarm(unsigned char* frame, int* len, unsigned char* addr_s);
 
 
 /*--------COUNTERS-------*/
