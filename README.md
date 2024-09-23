@@ -275,7 +275,24 @@ void ceres_09_event_relay(unsigned char* frame, unsigned char* event_dest, unsig
 void ceres_09_event_common(unsigned char* frame, unsigned char* event_dest, unsigned char* zone_dest);
 ```
 
-### Взятие шлейфа под охрану.
+## Сброс тревог.
+
+```cpp
+/** Запрос сброса тревоги.
+* @return void
+*/
+void ceres_q_drop_alarm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key);
+
+
+/** Анализ ответа на запрос сброса тревоги.
+* @return
+* 0 - успешно.
+* -1 - ошибка принятых данных.
+*/
+char ceres_r_drop_alarm(unsigned char* frame, int* len, unsigned char* addr_s);
+```
+
+## Взятие шлейфа под охрану.
 
 ```cpp
 /** Запрос на взятие шлейфа под охрану.
@@ -294,7 +311,7 @@ void ceres_q_zone_arm(unsigned char* frame, int* len, unsigned char* addr_s, uns
 char ceres_r_zone_arm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
 ```
 
-### Снятие шлейфа с охраны.
+## Снятие шлейфа с охраны.
 
 ```cpp
 /** Запрос на снятие шлейфа с охраны.
@@ -314,7 +331,7 @@ void ceres_q_zone_disarm(unsigned char* frame, int* len, unsigned char* addr_s, 
 char ceres_r_zone_disarm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
 ```
 
-### Включить реле (активировать выход).
+## Включить реле (активировать выход).
 
 ```cpp
 /** Запрос на включение реле.
@@ -333,7 +350,7 @@ void ceres_q_relay_on(unsigned char* frame, int* len, unsigned char* addr_s, uns
 char ceres_r_relay_on(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay);
 ```
 
-### Выключить реле (деактивировать выход).
+## Выключить реле (деактивировать выход).
 
 ```cpp
 /** Запрос на выключение реле.
@@ -352,7 +369,7 @@ void ceres_q_relay_off(unsigned char* frame, int* len, unsigned char* addr_s, un
 char ceres_r_relay_off(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay);
 ```
 
-### Запрос информации о шлейфе в Unicode строку.
+## Запрос информации о шлейфе в Unicode строку.
 
 Данные запросы применяется для получения информации:
 
@@ -376,7 +393,7 @@ void ceres_q_adc_v1(unsigned char* frame, int* len, unsigned char* addr_s, unsig
 * Указатель на строку данных, в случае успеха.
 * null - ошибка принятых данных.
 */
-unsigned char* ceres_r_adc_v1(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key);
+unsigned char* ceres_r_adc_v1(unsigned char* frame, int* len, unsigned char* addr_s);
 
 
 /*Версия 2*/
@@ -393,7 +410,7 @@ void ceres_q_adc_v2(unsigned char* frame, int* len, unsigned char* addr_s, unsig
 * Указатель на строку данных, в случае успеха.
 * null - ошибка принятых данных.
 */
-unsigned char* ceres_r_adc_v2(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key);
+unsigned char* ceres_r_adc_v2(unsigned char* frame, int* len, unsigned char* addr_s);
 ```
 
 Для удобства реализованы 2 функции для извлечения значений типа long int и double из полученной Unicode строки.
@@ -414,7 +431,7 @@ void ceres_extract_adc(unsigned char* frame, long int* dest);
 void ceres_extract_adc(unsigned char* frame, double* dest);
 ```
 
-### Запрос данных счетчика.
+## Запрос данных счетчика.
 
 ```cpp
 /** Запрос данных счетчика.
@@ -434,7 +451,7 @@ void ceres_q_counter(unsigned char* frame, int* len, unsigned char* addr_s, unsi
 char ceres_r_counter(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone, long long unsigned int* counter_dest);
 ```
 
-### Текстовые значения.
+## Текстовые значения.
 
 Внимание! Необходимо подключить заголовочный файл "Ceres_names.h"
 
@@ -459,5 +476,4 @@ const char* ceres_name_event(unsigned char event);
 * Указатель на строку данных.
 */
 const char* ceres_name_event_trnslt(unsigned char event);
-
 ```
