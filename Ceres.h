@@ -130,6 +130,18 @@ void                    ceres_q_relay_off(unsigned char* frame, int* len, unsign
 
 char                    ceres_r_relay_off(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char relay);
 
+/*--------ACCESS MANAGEMENT--------*/
+void                    ceres_q_access_unblock(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char reader_num);
+
+char                    ceres_r_access_unblock(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char reader_num);
+
+void                    ceres_q_access_block(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char reader_num);
+
+char                    ceres_r_access_block(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char reader_num);
+
+void                    ceres_q_access_reset(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char reader_num);
+
+char                    ceres_r_access_reset(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char reader_num);
 
 
 /*--------ADC-------*/

@@ -369,6 +369,69 @@ void ceres_q_relay_off(unsigned char* frame, int* len, unsigned char* addr_s, un
 char ceres_r_relay_off(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char relay);
 ```
 
+## Управление доступом.
+
+Данные запросы применяются для контроллера доступа С2000-2 и позволяют:
+
+1. Разблокировать дверь (замок будет открыт до восстановления доступа или блокировки двери, вне зависимости от предъявляемого идентификатора);
+
+2. Заблокировать дверь (замок будет закрыт до восстановления доступа или разблокировки двери, вне зависимости от предъявляемого идентификатора);
+
+3. Восстановить штатный режим доступа (замок будет закрыт и открываться или не открываться, в зависимости от предъявляемого идентификатора).
+
+### Разблокировать дверь.
+
+```cpp
+/** Запрос на разблокировку двери.
+* @param unsigned char reader_num - номер считывателя (реле).
+* @return void
+*/
+void ceres_q_access_unblock(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char reader_num);
+
+/** Анализ ответа на запрос на разблокировку двери.
+* @param unsigned char reader_num - номер считывателя (реле).
+* @return
+* 0 - успешно.
+* -1 - ошибка принятых данных.
+*/
+char ceres_r_access_unblock(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char reader_num);
+```
+### Заблокировать дверь.
+
+```cpp
+/** Запрос на блокировку двери.
+* @param unsigned char reader_num - номер считывателя (реле).
+* @return void
+*/
+void ceres_q_access_block(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char reader_num);
+
+/** Анализ ответа на запрос на блокировку двери.
+* @param unsigned char reader_num - номер считывателя (реле).
+* @return
+* 0 - успешно.
+* -1 - ошибка принятых данных.
+*/
+char ceres_r_access_block(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char reader_num);
+```
+
+### Восстановить штатный режим доступа.
+
+```cpp
+/** Запрос восстановления доступа.
+* @param unsigned char reader_num - номер считывателя (реле).
+* @return void
+*/
+void ceres_q_access_reset(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char reader_num);
+
+/** Анализ ответа на запрос восстановления доступа.
+* @param unsigned char reader_num - номер считывателя (реле).
+* @return
+* 0 - успешно.
+* -1 - ошибка принятых данных.
+*/
+char ceres_r_access_reset(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char reader_num);
+```
+
 ## Запрос информации о шлейфе в Unicode строку.
 
 Данные запросы применяется для получения информации:
