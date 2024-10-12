@@ -31,6 +31,8 @@ SOFTWARE.
 #include "Ceres_proto.h"
 #include <cstdlib>
 
+unsigned char   ceres_msg_key;
+
 unsigned char   ceres_crc_calc(unsigned char* frame, int* len)
 {
     unsigned char crc = 0;
@@ -55,7 +57,8 @@ char            ceres_crc_trim (unsigned char* frame, int* len)
 
 unsigned char   ceres_msg_keygen()
 {
-    return ceres_crc_table[rand()%256];
+    ceres_msg_key = ceres_crc_table[rand()%256];
+    return ceres_msg_key;
 };
 
 void            ceres_request_transform(unsigned char* frame, int* len, unsigned char* global_key)
@@ -70,6 +73,11 @@ void            ceres_reply_transform(unsigned char* frame, int* len, unsigned c
     return;
 };
 
+void            ceres_reply_transform_2(unsigned char* frame, int* len, unsigned char* global_key)
+{
+    for (int i = 3; i < *len; i++) frame[i] = frame[i] ^ (ceres_msg_key ^ (*global_key));
+    return;
+};
 
 
 unsigned char ceres_counter_calc(int iteration)

@@ -61,6 +61,8 @@ mailto:a.s.yuschenko@gmail.com <br />
 
 ### Типы событий.
 
+**CERES_ET_NO_EVENT** нет событий
+
 **CERES_ET_COMMON** общее событие
 
 **CERES_ET_ALARM** событие тревога
@@ -226,19 +228,17 @@ void ceres_q_load_event(unsigned char* frame, int* len, unsigned char* addr_s, u
 
 ```cpp
 /** Анализ ответа на запрос на чтение события прибора, получение типа и кода события.
-* @param int* event_type_dest - указатель на переменную для сохранения типа события.
 * @param unsigned char* event_dest - указатель на переменную для сохранения кода события.
 * @return
-* 0 - данные обработаны, есть событие.
-* 1 - данные обработаны, событий нет.
+* CERES_ET_xxx, где xxx - тип события 
 * -1 - ошибка принятых данных.
 */
-char ceres_09_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest, unsigned char* event_dest);
+int ceres_09_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char* event_dest);
 ```
 
 **Получение данных о событии типа CERES_ET_ACCESS.**
 
-Для получения кода проксимити-карты необходимо создать (использовать созданный ранее) буфер размером 10 байт, или использовать значение, определенное в **CERES_SIZE_CARD_CODE**. Полученный код проксимити-карты будет сохранен в этот буфер.
+Для получения кода проксимити-карты необходимо создать (использовать созданный ранее) буфер размером 8 байт, или использовать значение, определенное в **CERES_SIZE_CARD_CODE**. Полученный код проксимити-карты будет сохранен в этот буфер.
 
 ```cpp
 /** Получение данных о событии типа CERES_ET_ACCESS.
@@ -273,6 +273,60 @@ void ceres_09_event_relay(unsigned char* frame, unsigned char* event_dest, unsig
 * void
 */
 void ceres_09_event_common(unsigned char* frame, unsigned char* event_dest, unsigned char* zone_dest);
+```
+
+### Обработка событий для С2000-2:
+
+**Получение типа и кода события.**
+
+```cpp
+/** Анализ ответа на запрос на чтение события прибора, получение типа и кода события.
+* @param unsigned char* event_dest - указатель на переменную для сохранения кода события.
+* @return
+* CERES_ET_xxx, где xxx - тип события 
+* -1 - ошибка принятых данных.
+*/
+int ceres_10_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char* event_dest);
+```
+
+**Получение данных о событии типа CERES_ET_ACCESS.**
+
+Для получения кода проксимити-карты необходимо создать (использовать созданный ранее) буфер размером 8 байт, или использовать значение, определенное в **CERES_SIZE_CARD_CODE**. Полученный код проксимити-карты будет сохранен в этот буфер.
+
+```cpp
+/** Получение данных о событии типа CERES_ET_ACCESS.
+* @param unsigned char code_dest[CERES_SIZE_CARD_CODE] - указатель на буфер для сохранения кода проксимити-карты.
+* @param unsigned char* reader_num_dest - указатель на переменную для сохранения номера считывателя.
+* @param unsigned char* event_dest - указатель на переменную для сохранения кода события.
+* @return
+* void
+*/
+void ceres_10_event_access(unsigned char* frame, unsigned char* event_num_dest, unsigned char* reader_num_dest, unsigned char code_dest[CERES_SIZE_CARD_CODE]);
+```
+
+**Получение данных о событии типа CERES_ET_RELAY.**
+
+```cpp
+/** Получение данных о событии типа CERES_ET_RELAY.
+* @param unsigned char* relay_dest - указатель на переменную для сохранения номера реле (выхода).
+* @param unsigned char* program_dest - указатель на переменную для сохранения номера программы управления.
+* @param unsigned char* event_dest - указатель на переменную для сохранения кода события.
+* @return
+* void
+*/
+void ceres_10_event_relay(unsigned char* frame, unsigned char* event_dest, unsigned char* relay_dest, unsigned char* program_dest);
+```
+
+**Получение данных о простых событиях.**
+
+```cpp
+/** Получение данных о простых событиях.
+* @param unsigned char* zone_dest - указатель на переменную для сохранения номера зоны.
+* @param unsigned char* event_dest - указатель на переменную для сохранения кода события.
+* @return
+* void
+*/
+void ceres_10_event_common(unsigned char* frame, unsigned char* event_dest, unsigned char* zone_dest);
 ```
 
 ## Сброс тревог.

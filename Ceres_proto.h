@@ -54,12 +54,15 @@ const unsigned char     ceres_crc_table[] =
 
 const unsigned char ceres_counter_table[] = {0x07, 0x04, 0x05, 0x02 , 0x03, 0x00, 0x01, 0x0e, 0x0f, 0x0c, 0x0d, 0x0a, 0x0b, 0x08, 0x09, 0x06};
 
+extern unsigned char           ceres_msg_key;
+
 unsigned char           ceres_crc_calc(unsigned char* frame, int* len);
 void                    ceres_crc_add (unsigned char* frame, int* len);
 char                    ceres_crc_trim (unsigned char* frame, int* len);
 unsigned char           ceres_msg_keygen();
 void                    ceres_request_transform(unsigned char* frame, int* len, unsigned char* global_key);
 void                    ceres_reply_transform(unsigned char* frame, int* len, unsigned char cmd);
+void                    ceres_reply_transform_2(unsigned char* frame, int* len, unsigned char* global_key);
 unsigned char           ceres_counter_calc(int iteration);
 
 

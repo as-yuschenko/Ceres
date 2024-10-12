@@ -31,18 +31,19 @@ SOFTWARE.
 #ifndef CERES_H_INCLUDED
 #define CERES_H_INCLUDED
 
-#define CERES_SIZE_CARD_CODE                10
+#define CERES_SIZE_CARD_CODE                8
 #define CERES_SIZE_STATES_ARR               5
 #define CERES_SIZE_DEV_NAMES_ARR            53
 
-#define CERES_ET_COMMON                     0
-#define CERES_ET_ALARM                      1
-#define CERES_ET_ARM                        2
-#define CERES_ET_TROUBLE                    4
-#define CERES_ET_RECOVERY                   8
-#define CERES_ET_RELAY                      16
-#define CERES_ET_ACCESS                     32
-#define CERES_ET_TECH                       64
+#define CERES_ET_NO_EVENT                   0
+#define CERES_ET_NO_COMMON                  1
+#define CERES_ET_ALARM                      2
+#define CERES_ET_ARM                        4
+#define CERES_ET_TROUBLE                    8
+#define CERES_ET_RECOVERY                   16
+#define CERES_ET_RELAY                      32
+#define CERES_ET_ACCESS                     64
+#define CERES_ET_TECH                       128
 
 #include "Ceres_proto.h"
 
@@ -89,13 +90,24 @@ void                    ceres_q_load_event(unsigned char* frame, int* len, unsig
 
 
 /*S2000-KDL*/
-char                    ceres_09_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, int* event_type_dest, unsigned char* event_num_dest);
+int                     ceres_09_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char* event_num_dest);
 
 void                    ceres_09_event_access(unsigned char* frame, unsigned char* event_num_dest, unsigned char code_dest[CERES_SIZE_CARD_CODE]);
 
 void                    ceres_09_event_relay(unsigned char* frame, unsigned char* event_num_dest, unsigned char* relay_dest, unsigned char* program_dest);
 
 void                    ceres_09_event_common(unsigned char* frame, unsigned char* event_num_dest, unsigned char* zone_dest);
+
+/*S2000-2*/
+int                     ceres_10_event_type(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char* event_num_dest);
+
+void                    ceres_10_event_access(unsigned char* frame, unsigned char* event_num_dest, unsigned char* reader_num_dest, unsigned char code_dest[CERES_SIZE_CARD_CODE]);
+
+void                    ceres_10_event_relay(unsigned char* frame, unsigned char* event_num_dest, unsigned char* relay_dest, unsigned char* program_dest);
+
+void                    ceres_10_event_common(unsigned char* frame, unsigned char* event_num_dest, unsigned char* zone_dest);
+
+
 
 /*--------ALARMS--------*/
 void                    ceres_q_drop_alarm(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key);
@@ -143,6 +155,7 @@ void                    ceres_q_access_reset(unsigned char* frame, int* len, uns
 
 char                    ceres_r_access_reset(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char reader_num);
 
+void                    ceres_q_access_test(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char reader_num, unsigned char cmd);
 
 /*--------ADC-------*/
 void                    ceres_q_adc_v1(unsigned char* frame, int* len, unsigned char* addr_s, unsigned char* global_key, unsigned char zone);
